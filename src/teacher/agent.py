@@ -1,0 +1,40 @@
+import json
+import asyncio
+
+from google.adk.agents import LlmAgent
+from google.adk.models import Gemini
+from google.adk.runners import InMemoryRunner
+from dotenv import load_dotenv
+
+
+from .instructions import INSTRUCTIONS_V1
+
+
+teacher_agent = LlmAgent(
+    name="PedagocialArchitect",
+    instruction=INSTRUCTIONS_V1,
+    model=Gemini(model="gemini-3-flash-preview"),  # TODO: check use_interactions_api
+)
+
+
+async def main():
+    runner = InMemoryRunner(agent=teacher_agent)
+
+    user_request = {
+        "gender": "f",
+        "age": 6,
+        "language": "fr",
+        "theme": "Forest",
+        "targetWord": None,
+    }
+
+    response = await runner.run_debug(
+        json.dumps(user_request),
+        verbose=True,
+    )
+
+
+# uv run -m  src.teacher.agent
+if __name__ == "__main__":
+    load_dotenv()
+    asyncio.run(main())
