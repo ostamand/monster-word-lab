@@ -8,17 +8,16 @@ from google.genai import types
 from google.cloud import storage
 
 
-def generate_image_tool(prompt: str) -> Dict[str, str]:
+def generate_image_tool(id: str, prompt: str) -> str:
     """
     Generates an image using Nano Banana (Gemini 2.5 Flash Image) and uploads it to GCS.
 
     Args:
-        prompt (str): The natural language description for the image.
+        id (str): The unique UUID for this generation pipeline.
+        prompt (str): The natural language description for the image model.
 
     Returns:
-        dict: A dictionary containing the generation metadata:
-            * generationId (str): The unique UUID for this specific generation.
-            * rawMedia (str): The Google Cloud Storage URI (gs://...) of the raw image.
+        str: The GCS path of the raw generated image.
     """
     try:
         project_id = os.environ["GCP_PROJECT"]
@@ -89,16 +88,12 @@ def generate_image_tool(prompt: str) -> Dict[str, str]:
         else:
             image_bytes = image_data
 
-        unique_id = uuid.uuid4()
-        filename = f"raw/{unique_id}.png"
+        filename = f"raw/{id}.png"
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(filename)
         blob.upload_from_string(image_bytes, content_type="image/png")
 
-        return {
-            "generationId": str(unique_id),
-            "rawMedia": f"gs://{bucket_name}/{filename}",
-        }
+        return f"gs://{bucket_name}/{filename}"
 
     except Exception as e:
         print(f"❌ Image generation failed: {e}")

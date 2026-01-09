@@ -10,12 +10,18 @@ from .instructions import INSTRUCTIONS_V1
 from .tools.combine import create_composite_card_tool
 from .tools.generate import generate_image_tool
 from .tools.speech import generate_speech_tool
+from .tools.persistence import persist_media_paths
 
 builder_agent = LlmAgent(
     name="BuilderAgent",
     instruction=INSTRUCTIONS_V1,
     model=Gemini(model="gemini-3-flash-preview"),
-    tools=[generate_image_tool, generate_speech_tool, create_composite_card_tool],
+    tools=[
+        generate_image_tool,
+        generate_speech_tool,
+        create_composite_card_tool,
+        persist_media_paths,
+    ],
 )
 
 

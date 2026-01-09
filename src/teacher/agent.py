@@ -8,12 +8,14 @@ from dotenv import load_dotenv
 
 
 from .instructions import INSTRUCTIONS_V1
+from .tools import persist_learning_data
 
 
 teacher_agent = LlmAgent(
     name="PedagocialArchitect",
     instruction=INSTRUCTIONS_V1,
     model=Gemini(model="gemini-3-flash-preview"),  # TODO: check use_interactions_api
+    tools=[persist_learning_data],
 )
 
 
@@ -28,7 +30,7 @@ async def main():
         "targetWord": None,
     }
 
-    response = await runner.run_debug(
+    await runner.run_debug(
         json.dumps(user_request),
         verbose=True,
     )

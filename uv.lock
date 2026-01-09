@@ -563,6 +563,22 @@ wheels = [
 ]
 
 [[package]]
+name = "google-cloud-firestore"
+version = "2.22.0"
+source = { registry = "https://us-python.pkg.dev/artifact-foundry-prod/ah-3p-staging-python/simple/" }
+dependencies = [
+    { name = "google-api-core", extra = ["grpc"] },
+    { name = "google-auth" },
+    { name = "google-cloud-core" },
+    { name = "proto-plus" },
+    { name = "protobuf" },
+]
+sdist = { url = "https://us-python.pkg.dev/artifact-foundry-prod/ah-3p-staging-python/google-cloud-firestore/google_cloud_firestore-2.22.0.tar.gz", hash = "sha256:9d6a5bdefb30ed5ca94a7cb3560873352a3dbf868957ef789e6e74d086d52d82" }
+wheels = [
+    { url = "https://us-python.pkg.dev/artifact-foundry-prod/ah-3p-staging-python/google-cloud-firestore/google_cloud_firestore-2.22.0-py3-none-any.whl", hash = "sha256:47652ca74a77903c192fe194f646871ca2f881e56c30e7f573a9782d3bdbb610" },
+]
+
+[[package]]
 name = "google-cloud-logging"
 version = "3.13.0"
 source = { registry = "https://us-python.pkg.dev/artifact-foundry-prod/ah-3p-staging-python/simple/" }
@@ -1165,6 +1181,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "google-adk" },
+    { name = "google-cloud-firestore" },
     { name = "google-cloud-storage" },
     { name = "google-cloud-texttospeech" },
     { name = "pillow" },
@@ -1174,6 +1191,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "google-adk", specifier = ">=1.21.0" },
+    { name = "google-cloud-firestore", specifier = ">=2.22.0" },
     { name = "google-cloud-storage", specifier = ">=3.7.0" },
     { name = "google-cloud-texttospeech", specifier = ">=2.33.0" },
     { name = "pillow", specifier = ">=12.1.0" },

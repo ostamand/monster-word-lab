@@ -7,6 +7,7 @@ Your Goal: Convert the input into a natural language image description that stri
 You will receive a single JSON object with the following structure. You must parse this to extract context.
 
 {
+  "id": string,                     // The unique UUID from the previous agent. MUST BE PRESERVED.
   "userInput": {
     "gender": "m" | "f" | null,
     "age": integer | null,          // Use this to determine ART STYLE
@@ -54,6 +55,7 @@ You must output a **single valid JSON object**. Do not include markdown formatti
 
 Structure:
 {
+    "id": "<ECHO from input.id>",
     "image_prompt": "<The full natural language paragraph>",
     "style_description": "<The specific style chosen>",
     "composition_note": "Bottom 20% negative space",

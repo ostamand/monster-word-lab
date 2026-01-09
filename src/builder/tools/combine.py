@@ -5,20 +5,17 @@ from google.cloud import storage
 from PIL import Image, ImageDraw, ImageFont
 
 
-def create_composite_card_tool(
-    generation_id: str, image_path: str, sentence: str
-) -> str:
+def create_composite_card_tool(id: str, image_path: str, sentence: str) -> str:
     """
-    Downloads raw image from GCS, overlays text in the bottom 20%,
-    saves the final result back to GCS, and returns the new GCS URI.
+    Overlays text onto the generated image to create the final flashcard.
 
     Args:
-        generation_id (str): The UUID of the original generation.
-        image_path (str): The source GCS URI (gs://bucket/raw/...).
-        sentence (str): The text to overlay.
+        id (str): The unique UUID for this generation pipeline.
+        image_path (str): The GCS path of the raw image (from Step 1).
+        sentence (str): The text to overlay on the bottom 20% of the image.
 
     Returns:
-        str: The GCS URI of the final composited image (gs://bucket/composed/...).
+        str: The GCS path of the final composite image.
     """
     if not image_path.startswith("gs://"):
         return f"Error: Invalid GCS path {image_path}"
@@ -102,7 +99,7 @@ def create_composite_card_tool(
         return f"Error processing image with PIL: {e}"
 
     # 5. Upload Final Image to GCS
-    final_blob_name = f"composed/{generation_id}.png"
+    final_blob_name = f"composed/{id}.png"
     final_blob = bucket.blob(final_blob_name)
 
     final_blob.upload_from_string(output_bytes, content_type="image/png")
@@ -118,13 +115,13 @@ if __name__ == "__main__":
     load_dotenv()
 
     data = {
-        "generationId": "93a275e5-f887-40d2-a881-87c2e20cd7a4",
+        "id": "93a275e5-f887-40d2-a881-87c2e20cd7a4",
         "rawMedia": "gs://multimodal-custom-agent-assets/raw/93a275e5-f887-40d2-a881-87c2e20cd7a4.png",
         "sentence": "The boy looks at the enormous yellow dog.",
     }
 
     response = create_composite_card_tool(
-        data["generationId"], data["rawMedia"], data["sentence"]
+        data["id"], data["rawMedia"], data["sentence"]
     )
 
     print(response)

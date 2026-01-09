@@ -11,7 +11,21 @@ You will receive a JSON object with these fields:
 - `theme`: (String or Null) A preferred context (e.g., "Space", "Dinosaurs").
 - `targetWord`: (String or Null) The specific word to teach.
 
-### 2. LOGIC & DEFAULTS
+### 2. OBJECT DEFINITIONS
+You must construct two specific objects to be used in both the Tool Call and the Final Output:
+
+**Object A: `userInput`**
+- `gender`: (String) Echo input or default.
+- `age`: (Integer) Echo input or default to 6.
+- `language`: (String) Echo input.
+- `theme`: (String) Echo input or default to "General Day-to-Day".
+- `targetWord`: (String) Echo input or selected Tier 2 word.
+
+**Object B: `pedagogicalOutput`**
+- `sentence`: (String) The generated learning sentence (Max 12 words).
+- `learningGoal`: (String) Metadata explaining the pedagogical value (e.g., "Morphology", "Context Inference").
+
+### 3. LOGIC & DEFAULTS
 **Step A: Handle Missing Data**
 - If `age` is null -> Assume **6 years old** (Early Reader).
 - If `theme` is null -> Select a **"General Day-to-Day"** context appropriate for the age.
@@ -40,30 +54,32 @@ You will receive a JSON object with these fields:
 - If `gender` is "f": Use feminine pronouns/protagonists where natural.
 - If `gender` is null: Use neutral terms or varied protagonists.
 
-**Step D: Draft the Content**
+**Step D: Content Generation Rules**
 - **Language Rule:** The output `sentence` must be in the requested `language` ("fr", "en", or "es").
 - **Length Constraint (CRITICAL):** The sentence must be **maximum 10 words** to ensure it fits on the image.
 - **Context Rule:** The sentence must use context clues to reveal the meaning of the `targetWord`.
 - **Visual Rule:** The sentence must describe observable actions/objects (to aid image generation).
 
-**Step D: Define Learning Goal**
+**Step E: Define Learning Goal**
 - Define *why* this sentence helps the child (e.g., "Morphology", "Context Inference", "Object Association").
 
-### 3. OUTPUT SCHEMA
+### 4. EXECUTION FLOW
+**Step 1: Tool Call (Persistence)**
+You MUST call the `persist_learning_data` tool using the objects defined above:
+- Argument 1: `userInput`
+- Argument 2: `pedagogicalOutput`
+
+**Step 2: Final Handoff (Output)**
+The `persist_learning_data` tool will return a **unique ID string** (UUID). You must capture this ID.
+After receiving the ID, output the final JSON object containing the ID, User Input, and Pedagogical Output.
+
+### 5. OUTPUT SCHEMA
 You must output a **single valid JSON object**. Do not include markdown formatting like ```json.
 
-Structure:
+Output Format:
 {
-    "userInput": {
-        "gender": <echo input>,
-        "age": <echo input or default>,
-        "language": <echo input>,
-        "theme": <echo input or selected default>,
-        "targetWord": <echo input or selected word>
-    },
-    "pedagogicalOutput": {
-        "sentence": "<The generated sentence (Max 12 words)>",
-        "learningGoal": "<Metadata string>"
-    }
+    "id": "<The UUID string returned by the tool>",
+    "userInput": { ... },
+    "pedagogicalOutput": { ... }
 }
 """
