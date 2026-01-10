@@ -14,7 +14,7 @@ from .tools import persist_learning_data
 teacher_agent = LlmAgent(
     name="PedagocialArchitect",
     instruction=INSTRUCTIONS_V1,
-    model=Gemini(model="gemini-3-flash-preview"),  # TODO: check use_interactions_api
+    model=Gemini(model="gemini-2.5-flash"),  # TODO: check use_interactions_api
     tools=[persist_learning_data],
 )
 
@@ -36,7 +36,7 @@ async def main():
     )
 
 
-# uv run -m  src.teacher.agent
+# uv run -m  monster-word-agent.teacher.agent
 if __name__ == "__main__":
     load_dotenv()
     asyncio.run(main())

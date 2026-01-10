@@ -20,9 +20,9 @@ def generate_image_tool(id: str, prompt: str) -> str:
         str: The GCS path of the raw generated image.
     """
     try:
-        project_id = os.environ["GCP_PROJECT"]
-        location = os.environ["GCP_LOCATION"]
-        bucket_name = os.environ["GCP_MEDIA_BUCKET"]
+        project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
+        location = os.environ["GOOGLE_CLOUD_LOCATION"]
+        bucket_name = os.environ["GOOGLE_CLOUD_MEDIA_BUCKET"]
         media_model = os.environ["MEDIA_GENERATION_MODEL"]
     except KeyError as e:
         raise ValueError(f"Missing environment variable: {e}")

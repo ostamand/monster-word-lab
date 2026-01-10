@@ -12,7 +12,7 @@ from .instructions import INSCTUCTIONS_V1
 creative_agent = LlmAgent(
     name="CreativeDirector",
     instruction=INSCTUCTIONS_V1,
-    model=Gemini(model="gemini-3-flash-preview"),
+    model=Gemini(model="gemini-2.5-flash"),
 )
 
 
@@ -39,7 +39,7 @@ async def main():
     )
 
 
-# uv run -m src.creative.agent
+# uv run -m monster-word-agent.creative.agent
 if __name__ == "__main__":
     load_dotenv()
     asyncio.run(main())

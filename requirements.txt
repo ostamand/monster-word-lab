@@ -1,0 +1,6 @@
+google-adk==1.21.0
+google-cloud-firestore
+google-cloud-storage
+pillow
+python-dotenv
+google-genai==1.41.0

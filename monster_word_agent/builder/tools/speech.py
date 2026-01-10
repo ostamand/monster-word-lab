@@ -17,8 +17,8 @@ def generate_speech_tool(generation_id: str, text: str, language: str) -> str:
         str: The GCS URI of the saved audio file.
     """
     try:
-        project_id = os.environ["GCP_PROJECT"]
-        bucket_name = os.environ["GCP_MEDIA_BUCKET"]
+        project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
+        bucket_name = os.environ["GOOGLE_CLOUD_MEDIA_BUCKET"]
     except KeyError as e:
         return f"Error: Missing environment variable {e}"
 
