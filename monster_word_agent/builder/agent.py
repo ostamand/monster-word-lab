@@ -11,11 +11,12 @@ from .tools.combine import create_composite_card_tool
 from .tools.generate import generate_image_tool
 from .tools.speech import generate_speech_tool
 from .tools.persistence import persist_media_paths
+from ..app_configs import configs
 
 builder_agent = LlmAgent(
     name="BuilderAgent",
     instruction=INSTRUCTIONS_V1,
-    model=Gemini(model="gemini-2.5-flash"),
+    model=Gemini(model=configs.llm_model),
     tools=[
         generate_image_tool,
         generate_speech_tool,
@@ -50,7 +51,7 @@ async def main():
     )
 
 
-# uv run -m monster-word-agent.builder.agent
+# python -m monster_word_agent.builder.agent
 if __name__ == "__main__":
     load_dotenv()
     asyncio.run(main())

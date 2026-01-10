@@ -7,6 +7,8 @@ from google import genai
 from google.genai import types
 from google.cloud import storage
 
+from ...app_configs import configs
+
 
 def generate_image_tool(id: str, prompt: str) -> str:
     """
@@ -19,21 +21,13 @@ def generate_image_tool(id: str, prompt: str) -> str:
     Returns:
         str: The GCS path of the raw generated image.
     """
-    try:
-        project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
-        location = os.environ["GOOGLE_CLOUD_LOCATION"]
-        bucket_name = os.environ["GOOGLE_CLOUD_MEDIA_BUCKET"]
-        media_model = os.environ["MEDIA_GENERATION_MODEL"]
-    except KeyError as e:
-        raise ValueError(f"Missing environment variable: {e}")
-
     ai_client = genai.Client(
         vertexai=True,
-        project=project_id,
-        location=location,
+        project=configs.gcp_project,
+        location=configs.gcp_location,
     )
 
-    storage_client = storage.Client(project=project_id)
+    storage_client = storage.Client(project=configs.gcp_project)
 
     prompt_part = types.Part.from_text(text=prompt)
 
@@ -68,7 +62,7 @@ def generate_image_tool(id: str, prompt: str) -> str:
 
     try:
         response = ai_client.models.generate_content(
-            model=media_model,
+            model=configs.media_model,
             contents=contents,
             config=generate_content_config,
         )
@@ -89,11 +83,11 @@ def generate_image_tool(id: str, prompt: str) -> str:
             image_bytes = image_data
 
         filename = f"raw/{id}.png"
-        bucket = storage_client.bucket(bucket_name)
+        bucket = storage_client.bucket(configs.gcp_media_bucket)
         blob = bucket.blob(filename)
         blob.upload_from_string(image_bytes, content_type="image/png")
 
-        return f"gs://{bucket_name}/{filename}"
+        return f"gs://{configs.gcp_media_bucket}/{filename}"
 
     except Exception as e:
         print(f"❌ Image generation failed: {e}")

@@ -4,6 +4,8 @@ import textwrap
 from google.cloud import storage
 from PIL import Image, ImageDraw, ImageFont
 
+from ...app_configs import configs
+
 
 def create_composite_card_tool(id: str, image_path: str, sentence: str) -> str:
     """
@@ -64,7 +66,7 @@ def create_composite_card_tool(id: str, image_path: str, sentence: str) -> str:
         try:
             # Try to load a standard font (Adjust path for your container OS)
             # Common linux path: /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
-            font = ImageFont.truetype("arial.ttf", font_size)
+            font = ImageFont.truetype(configs.font_path, font_size)
         except IOError:
             font = ImageFont.load_default()
 

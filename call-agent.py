@@ -3,6 +3,7 @@ import os
 import requests
 import subprocess
 import uuid
+import json
 
 from dotenv import load_dotenv
 
@@ -42,18 +43,29 @@ def main(endpoint: str):
     print("Session:", response.json())
 
     # run the agent
+
+    user_request = {
+        "gender": "f",
+        "age": 6,
+        "language": "fr",
+        "theme": None,
+        "targetWord": None,
+    }
+
     payload = {
         "app_name": APP_NAME,
         "user_id": USER_ID,
         "session_id": session_id,
         "new_message": {
             "role": "user",
-            "parts": [{"text": "hi"}],
+            "parts": [{"text": json.dumps(user_request)}],
         },
         "streaming": False,
     }
     response = requests.post(f"{endpoint}/run_sse", headers=headers, json=payload)
     response.raise_for_status()
+
+    print("Assets generated successfully.")
 
 
 if __name__ == "__main__":

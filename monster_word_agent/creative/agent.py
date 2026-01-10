@@ -7,12 +7,13 @@ from google.adk.runners import InMemoryRunner
 from dotenv import load_dotenv
 
 from .instructions import INSCTUCTIONS_V1
+from ..app_configs import configs
 
 
 creative_agent = LlmAgent(
     name="CreativeDirector",
     instruction=INSCTUCTIONS_V1,
-    model=Gemini(model="gemini-2.5-flash"),
+    model=Gemini(model=configs.llm_model),
 )
 
 

@@ -2,7 +2,8 @@ from typing import TypedDict, Optional, Literal
 import uuid
 from google.cloud import firestore
 
-from ..database import db, GENERATION_COLLECTION
+from ..database import db
+from ..app_configs import configs
 
 
 class UserInput(TypedDict):
@@ -56,7 +57,7 @@ def persist_learning_data(userInput, pedagogicalOutput) -> str:
             "created_at": firestore.SERVER_TIMESTAMP,
         }
 
-        doc_ref = db.collection(GENERATION_COLLECTION).document(unique_id)
+        doc_ref = db.collection(configs.generation_collection_name).document(unique_id)
         doc_ref.set(doc_data)
 
         return unique_id

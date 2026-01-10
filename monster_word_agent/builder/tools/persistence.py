@@ -1,6 +1,7 @@
 from google.cloud import firestore
 
-from ...database import db, GENERATION_COLLECTION
+from ...database import db
+from ...app_configs import configs
 
 
 def persist_media_paths(id: str, final_image_path: str, final_audio_path: str) -> str:
@@ -17,7 +18,7 @@ def persist_media_paths(id: str, final_image_path: str, final_audio_path: str) -
         str: Success message indicating the paths were saved.
     """
     try:
-        doc_ref = db.collection(GENERATION_COLLECTION).document(id)
+        doc_ref = db.collection(configs.generation_collection_name).document(id)
 
         doc_ref.update(
             {

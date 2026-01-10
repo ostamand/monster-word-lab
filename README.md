@@ -1,9 +1,19 @@
 ## Setup
 
+### Install dependencies
+
+```sh
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Setup gcloud for local development
+
 ```sh
 gcloud auth login
 gcloud auth auth application-default login
-gcloud config set project multimodal-custom-agent
+gcloud config set project <project-name>
 ```
 
 Configure docker for Artifact Registry
