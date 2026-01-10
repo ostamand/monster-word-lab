@@ -24,14 +24,26 @@ gcloud auth configure-docker <LOCATION>-docker.pkg.dev
 
 ## Deployment
 
-### Agent Cloud Run
+Create service account for public api
 
-Get project number.
 
 ```sh
-gcloud projects describe [PROJECT_ID]
+gcloud iam service-accounts create monster-word-lab-api \
+    --display-name="Monster Word Lab Public API"
 ```
 
-Update default compute service account roles ie. `{projectNumber}-compute@developer.gserviceaccount.com`
+Assign it to the public api.
 
-![alt text](doc/service-account.png)
+```sh
+gcloud run services update monster-word-lab-api \
+  --service-account "monster-word-lab-api@$(gcloud config get-value project).iam.gserviceaccount.com"
+```
+
+Grant permission to call the private service (the agent)
+
+```sh
+gcloud run services add-iam-policy-binding monster-word-lab-agent \
+  --region=us-east4 \
+  --member="serviceAccount:monster-word-lab-api@$(gcloud config get-value project).iam.gserviceaccount.com" \
+  --role="roles/run.invoker"
+```
