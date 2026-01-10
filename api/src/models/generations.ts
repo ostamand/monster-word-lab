@@ -2,7 +2,7 @@ import { db } from "./database.js";
 
 import configs from "../configs.js";
 
-import { Timestamp } from "firebase-admin/firestore";
+import { FieldPath, Timestamp } from "firebase-admin/firestore";
 
 type PossibleLanguages = "en" | "es" | "fr";
 
@@ -70,6 +70,51 @@ export async function getLatestGeneration() {
         return null;
     } catch (error) {
         console.error("Error getting latest generation", error);
+        return null;
+    }
+}
+
+export async function getRandomGeneration(
+    excludeIds: string[] = [],
+): Promise<GenerationOutput | null> {
+    try {
+        const collectionRef = db.collection(configs.generationCollection);
+
+        // Generate a random ID to use as a cursor
+        const randomKey = collectionRef.doc().id;
+
+        // Helper to process snapshot
+        const findValidDoc = (snapshot: FirebaseFirestore.QuerySnapshot) => {
+            for (const doc of snapshot.docs) {
+                if (!excludeIds.includes(doc.id)) {
+                    return { ...doc.data(), id: doc.id } as GenerationOutput;
+                }
+            }
+            return null;
+        };
+
+        // 1. Try finding a doc greater than or equal to the random key
+        // We fetch a small batch (limit 5) to increase odds of finding a non-excluded doc
+        const snapshotHigh = await collectionRef
+            .where(FieldPath.documentId(), ">=", randomKey)
+            .limit(5)
+            .get();
+
+        let validDoc = findValidDoc(snapshotHigh);
+        if (validDoc) return validDoc;
+
+        // 2. If no valid doc found (or end of collection), wrap around and search lower
+        const snapshotLow = await collectionRef
+            .where(FieldPath.documentId(), "<", randomKey)
+            .limit(5)
+            .get();
+
+        validDoc = findValidDoc(snapshotLow);
+        if (validDoc) return validDoc;
+
+        return null;
+    } catch (error) {
+        console.error("Error getting random generation:", error);
         return null;
     }
 }

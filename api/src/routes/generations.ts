@@ -1,7 +1,7 @@
 import express, { type Request, type Response } from "express";
 
 import {
-    getLatestGeneration,
+    getRandomGeneration,
     getTodayGenerationsCount,
 } from "../models/generations.js";
 import configs from "../configs.js";
@@ -10,18 +10,45 @@ import { sendGeneration } from "../lib/generations.js";
 
 const generationsRouter = express.Router();
 
-generationsRouter.get("/", async (req: Request, res: Response) => {
-    const { count: paramsCount } = req.query;
-    if (paramsCount === "today") {
-        // only want count
-        const count = await getTodayGenerationsCount();
-        if (count) {
-            return res.json({ count });
-        } else {
-            res.status(500).json({
-                message: "Something went wrong, could not connect to database.",
-            });
+generationsRouter.get("/random", async (req: Request, res: Response) => {
+    try {
+        // Parse the optional excludeIds from query parameters
+        // Supports: /random?excludeIds=abc,123  OR  /random?excludeIds=abc&excludeIds=123
+        let excludeIds: string[] = [];
+        const { excludeIds: rawIds } = req.query;
+
+        if (typeof rawIds === "string") {
+            // Case: ?excludeIds=abc,123
+            excludeIds = rawIds.split(",");
+        } else if (Array.isArray(rawIds)) {
+            // Case: ?excludeIds=abc&excludeIds=123
+            excludeIds = rawIds as string[];
         }
+
+        const randomGen = await getRandomGeneration(excludeIds);
+
+        if (randomGen) {
+            return res.json(randomGen);
+        } else {
+            // 404 implies we couldn't find a doc (DB empty or all excluded)
+            return res.status(404).json({ message: "No generation found." });
+        }
+    } catch (error) {
+        console.error("Error in /random route:", error);
+        return res.status(500).json({
+            message: "Something went wrong, could not fetch random generation.",
+        });
+    }
+});
+
+generationsRouter.get("/count/today", async (req: Request, res: Response) => {
+    const count = await getTodayGenerationsCount();
+    if (count) {
+        return res.json({ count });
+    } else {
+        res.status(500).json({
+            message: "Something went wrong, could not connect to database.",
+        });
     }
 });
 
@@ -57,12 +84,3 @@ generationsRouter.post("/", async (req: Request, res: Response) => {
 });
 
 export default generationsRouter;
-
-/* const response = await fetch("http://localhost:3000/generations", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(
-        { gender: "m", age: 6, language: "fr", theme: null, targetWord: null },
-    ),
-});
- */
