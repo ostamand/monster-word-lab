@@ -63,7 +63,7 @@ export async function getDailyGenerationsCount() {
         if (!response.ok) {
             return null;
         }
-        const data = await response.json() as { count: Number };
+        const data = await response.json() as { count: number };
         return data.count;
     } catch (error) {
         console.error(
