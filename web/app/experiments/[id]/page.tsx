@@ -3,11 +3,39 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { GenerationOutput, getRandomGeneration } from "@/lib/generations";
 
 export default function ExperimentPage() {
     const params = useParams();
     const id = Number(params.id);
     const nextId = id + 1;
+
+    const [generation, setGeneration] = useState<GenerationOutput | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchGeneration() {
+            setLoading(true);
+            try {
+                const data = await getRandomGeneration("fr");
+                setGeneration(data);
+                console.log(data);
+            } catch (error) {
+                console.error("Failed to fetch generation", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchGeneration();
+    }, [id]);
+
+    function playAudio() {
+        if (generation?.final_audio_gcs_path) {
+            const audio = new Audio(generation.final_audio_gcs_path);
+            audio.play().catch((err) => console.error("Failed to play audio:", err));
+        }
+    }
 
     return (
         <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
@@ -40,15 +68,37 @@ export default function ExperimentPage() {
             <main className="relative z-20 flex min-h-screen flex-col items-center justify-center p-4">
                 {/* Central Image Placeholder */}
                 <div className="relative w-full max-w-[1184px] aspect-[1184/864] bg-black/50 rounded-lg border-2 border-white/20 shadow-2xl overflow-hidden backdrop-blur-sm group">
-                    <div className="absolute inset-0 flex items-center justify-center text-white/50">
-                        <span className="text-xl">Experiment {id} Visualization</span>
-                    </div>
-                    {/* In the future, the GCS image will go here */}
+                    {loading
+                        ? (
+                            <div className="absolute inset-0 flex items-center justify-center text-white/50">
+                                <span className="text-xl animate-pulse">
+                                    Loading...
+                                </span>
+                            </div>
+                        )
+                        : generation?.final_image_gcs_path
+                            ? (
+                                <Image
+                                    src={generation.final_image_gcs_path}
+                                    alt={generation.userInput.targetWord ||
+                                        "Experiment Generation"}
+                                    fill
+                                    className="object-cover"
+                                    priority
+                                />
+                            )
+                            : (
+                                <div className="absolute inset-0 flex items-center justify-center text-white/50">
+                                    <span className="text-xl">
+                                        Experiment {id} Visualization (No Data)
+                                    </span>
+                                </div>
+                            )}
 
                     {/* Speech Button - Positioned inside the frame, bottom right */}
                     <div className="absolute bottom-4 right-4 pointer-events-auto transition-transform hover:scale-110 active:scale-95 z-30">
                         <button
-                            onClick={() => console.log("Speech clicked")}
+                            onClick={playAudio}
                             className="focus:outline-none"
                         >
                             <Image
