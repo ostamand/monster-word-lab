@@ -9,7 +9,6 @@ You will receive a single JSON object with the following structure. You must par
 {
   "id": string,                     // The unique UUID from the previous agent. MUST BE PRESERVED.
   "userInput": {
-    "gender": "m" | "f" | null,
     "age": integer | null,          // Use this to determine ART STYLE
     "language": string,
     "theme": string,                // Use this to determine SETTING

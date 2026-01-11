@@ -7,7 +7,6 @@ from ..app_configs import configs
 
 
 class UserInput(TypedDict):
-    gender: Optional[Literal["m", "f"]]
     age: int
     language: Literal["en", "fr", "es"]
     theme: str
@@ -30,7 +29,6 @@ def persist_learning_data(userInput, pedagogicalOutput) -> str:
     Args:
         userInput (UserInput): A dictionary containing the learner's profile and
             context. Must include:
-            - 'gender': 'm', 'f', or None.
             - 'age': Integer representing the child's age.
             - 'language': The ISO code ('en', 'fr', 'es').
             - 'theme': The context theme (e.g., 'Space').

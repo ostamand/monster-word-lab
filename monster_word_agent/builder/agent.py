@@ -38,7 +38,6 @@ async def main():
     runner = InMemoryRunner(agent=sequential_agent)
 
     user_request = {
-        "gender": "m",
         "age": 6,
         "language": "fr",
         "theme": None,

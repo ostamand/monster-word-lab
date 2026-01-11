@@ -24,7 +24,6 @@ async def main():
     runner = InMemoryRunner(agent=teacher_agent)
 
     user_request = {
-        "gender": "f",
         "age": 6,
         "language": "fr",
         "theme": "Forest",

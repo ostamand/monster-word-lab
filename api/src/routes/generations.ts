@@ -12,11 +12,10 @@ const generationsRouter = express.Router();
 
 generationsRouter.get("/random", async (req: Request, res: Response) => {
     try {
-        // Parse the optional excludeIds from query parameters
+        // parse excludeIds
         // Supports: /random?excludeIds=abc,123  OR  /random?excludeIds=abc&excludeIds=123
         let excludeIds: string[] = [];
         const { excludeIds: rawIds } = req.query;
-
         if (typeof rawIds === "string") {
             // Case: ?excludeIds=abc,123
             excludeIds = rawIds.split(",");
@@ -25,7 +24,23 @@ generationsRouter.get("/random", async (req: Request, res: Response) => {
             excludeIds = rawIds as string[];
         }
 
-        const randomGen = await getRandomGeneration(excludeIds);
+        // parse age
+        let age: number | undefined;
+        if (req.query.age) {
+            // Base 10 parsing
+            const parsed = parseInt(req.query.age as string, 10);
+            if (!isNaN(parsed)) {
+                age = parsed;
+            }
+        }
+
+        // parse language
+        const language = req.query.language as "en" | "es" | "fr" | undefined;
+
+        const randomGen = await getRandomGeneration(
+            excludeIds,
+            { language, age },
+        );
 
         if (randomGen) {
             return res.json(randomGen);

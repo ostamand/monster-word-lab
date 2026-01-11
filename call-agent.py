@@ -45,7 +45,6 @@ def main(endpoint: str):
     # run the agent
 
     user_request = {
-        "gender": "f",
         "age": 6,
         "language": "fr",
         "theme": None,
@@ -62,7 +61,7 @@ def main(endpoint: str):
         },
         "streaming": False,
     }
-    response = requests.post(f"{endpoint}/run_sse", headers=headers, json=payload)
+    response = requests.post(f"{endpoint}/run", headers=headers, json=payload)
     response.raise_for_status()
 
     print("Assets generated successfully.")

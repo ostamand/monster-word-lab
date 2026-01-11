@@ -1,14 +1,13 @@
-import { db } from "./database.js";
-
-import configs from "../configs.js";
-
 import { FieldPath, Timestamp } from "firebase-admin/firestore";
+
+import { db } from "./database.js";
+import configs from "../configs.js";
+import { signGenerationOutput } from "../lib/storage.js";
 
 type PossibleLanguages = "en" | "es" | "fr";
 
 export type GenerationInput = {
-    gender: string | null;
-    age: string | null;
+    age: number | null;
     language: PossibleLanguages;
     theme: string | null;
     targetWord: string | null;
@@ -76,9 +75,27 @@ export async function getLatestGeneration() {
 
 export async function getRandomGeneration(
     excludeIds: string[] = [],
+    filters: {
+        age?: number | null | undefined;
+        language?: PossibleLanguages | undefined;
+    } = {},
 ): Promise<GenerationOutput | null> {
     try {
         const collectionRef = db.collection(configs.generationCollection);
+
+        let baseQuery: FirebaseFirestore.Query = collectionRef;
+
+        if (filters.language) {
+            baseQuery = baseQuery.where(
+                "userInput.language",
+                "==",
+                filters.language,
+            );
+        }
+
+        if (filters.age !== undefined && filters.age !== null) {
+            baseQuery = baseQuery.where("userInput.age", "==", filters.age);
+        }
 
         // Generate a random ID to use as a cursor
         const randomKey = collectionRef.doc().id;
@@ -95,22 +112,22 @@ export async function getRandomGeneration(
 
         // 1. Try finding a doc greater than or equal to the random key
         // We fetch a small batch (limit 5) to increase odds of finding a non-excluded doc
-        const snapshotHigh = await collectionRef
+        const snapshotHigh = await baseQuery
             .where(FieldPath.documentId(), ">=", randomKey)
             .limit(5)
             .get();
 
         let validDoc = findValidDoc(snapshotHigh);
-        if (validDoc) return validDoc;
+        if (validDoc) return await signGenerationOutput(validDoc);
 
         // 2. If no valid doc found (or end of collection), wrap around and search lower
-        const snapshotLow = await collectionRef
+        const snapshotLow = await baseQuery
             .where(FieldPath.documentId(), "<", randomKey)
             .limit(5)
             .get();
 
         validDoc = findValidDoc(snapshotLow);
-        if (validDoc) return validDoc;
+        if (validDoc) return await signGenerationOutput(validDoc);
 
         return null;
     } catch (error) {
