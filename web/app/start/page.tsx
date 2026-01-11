@@ -58,7 +58,7 @@ export default function StartPage() {
                 </div>
 
                 {/* Panel for Content */}
-                <div className="flex flex-col items-center gap-8 p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl max-w-4xl w-full mx-4 animate-fade-in-up pointer-events-auto" style={{ animationDelay: "150ms" }}>
+                <div className="flex flex-col items-center gap-8 p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl max-w-4xl w-full mx-4 animate-fade-in-up opacity-0 pointer-events-auto" style={{ animationDelay: "150ms" }}>
 
                     {/* Language Selection */}
                     <div className="flex flex-col items-center gap-4">
