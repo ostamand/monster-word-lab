@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
     GenerationOutput,
@@ -13,6 +13,7 @@ import LoadingAnimation from "@/components/LoadingAnimation";
 
 export default function ExperimentPage() {
     const params = useParams();
+    const router = useRouter();
     const { id } = params;
 
     const [generation, setGeneration] = useState<GenerationOutput | null>(null);
@@ -23,8 +24,8 @@ export default function ExperimentPage() {
             setLoading(true);
             try {
                 if (typeof id === "string") {
-                    const generation = await getGenerationById(id);
-                    setGeneration(generation);
+                    const gen = await getGenerationById(id);
+                    setGeneration(gen);
                 }
             } catch (error) {
                 console.error("Failed to fetch generation", error);
@@ -44,8 +45,24 @@ export default function ExperimentPage() {
         }
     }
 
+    async function handleNext() {
+        if (!generation) return;
+        try {
+            const nextGen = await getRandomGeneration(
+                generation.userInput.language,
+                generation.userInput.age,
+                [generation.id]
+            );
+            if (nextGen) {
+                router.push(`/experiments/${nextGen.id}`);
+            }
+        } catch (error) {
+            console.error("Failed to get next generation", error);
+        }
+    }
+
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
+        <div className="relative h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
             {/* Background Layer (z-0) */}
             <div className="absolute inset-0 z-0">
                 <Image
@@ -59,7 +76,6 @@ export default function ExperimentPage() {
             </div>
 
             {/* Foreground Layer (z-10) */}
-            {/* Framed overlay similar to landing page but using experiment assets */}
             <div className="absolute inset-0 z-10 pointer-events-none">
                 <Image
                     src="/experiment/foreground.jpeg"
@@ -71,87 +87,87 @@ export default function ExperimentPage() {
                 />
             </div>
 
-            {/* Main Content Area (z-20) */}
-            <main className="relative z-20 flex min-h-screen flex-col items-center justify-center p-4">
-                {/* Central Image Placeholder */}
-                {loading
-                    ? <LoadingAnimation message="Loading Experiment..." />
-                    : (
-                        <div className="relative w-full max-w-[1184px] aspect-[1184/864] bg-black/50 rounded-lg border-2 border-white/20 shadow-2xl overflow-hidden backdrop-blur-sm group">
-                            {generation?.final_image_gcs_path
-                                ? (
-                                    <Image
-                                        src={generation.final_image_gcs_path}
-                                        alt={generation.userInput.targetWord ||
-                                            "Experiment Generation"}
-                                        fill
-                                        className="object-cover"
-                                        priority
-                                    />
-                                )
-                                : (
-                                    <div className="absolute inset-0 flex items-center justify-center text-white/50">
-                                        <span className="text-xl">
-                                            Experiment {id}{" "}
-                                            Visualization (No Data)
-                                        </span>
-                                    </div>
-                                )}
+            {/* Main Layout (z-20) */}
+            <div className="relative z-20 flex h-full flex-col justify-between p-4 md:p-6">
+                
+                {/* Header: Home & Speech */}
+                <header className="flex w-full items-start justify-between pointer-events-none shrink-0 z-40">
+                    {/* Home Button - Top Left */}
+                    <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
+                        <Link href="/">
+                            <Image
+                                src="/experiment/home.png"
+                                alt="Home"
+                                width={200}
+                                height={70}
+                                className="h-16 w-auto md:h-20 drop-shadow-lg"
+                            />
+                        </Link>
+                    </div>
 
-                            {/* Speech Button - Positioned inside the frame, bottom right */}
-                            <div className="absolute bottom-4 right-4 pointer-events-auto transition-transform hover:scale-110 active:scale-95 z-30">
-                                <button
-                                    onClick={playAudio}
-                                    className="focus:outline-none"
-                                >
-                                    <Image
-                                        src="/experiment/speech.png"
-                                        alt="Speak"
-                                        width={80}
-                                        height={80}
-                                        className="w-16 h-16 md:w-20 md:h-20 drop-shadow-lg"
-                                    />
-                                </button>
-                            </div>
-                        </div>
-                    )}
-            </main>
+                    {/* Speech Button - Top Right */}
+                    <div className="pointer-events-auto transition-transform hover:scale-110 active:scale-95">
+                        <button
+                            onClick={playAudio}
+                            className={`focus:outline-none ${!generation?.final_audio_gcs_path ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={!generation?.final_audio_gcs_path}
+                        >
+                            <Image
+                                src="/experiment/speech.png"
+                                alt="Speak"
+                                width={80}
+                                height={80}
+                                className="w-16 h-16 md:w-20 md:h-20 drop-shadow-lg"
+                            />
+                        </button>
+                    </div>
+                </header>
 
-            {/* UI Controls (z-30) */}
-            <div className="absolute inset-0 z-30 pointer-events-none">
-                {/* Buttons Container */}
+                {/* Main Content Area */}
+                <main className="flex flex-1 items-center justify-center min-h-0 w-full p-4 pointer-events-none z-30">
+                    {loading
+                        ? <LoadingAnimation message="Loading Experiment..." className="pointer-events-auto" />
+                        : (
+                            <>
+                                {generation?.final_image_gcs_path
+                                    ? (
+                                        /* eslint-disable-next-line @next/next/no-img-element */
+                                        <img
+                                            src={generation.final_image_gcs_path}
+                                            alt={generation.userInput.targetWord ||
+                                                "Experiment Generation"}
+                                            className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg border-2 border-white/20 shadow-2xl bg-black/50 pointer-events-auto"
+                                        />
+                                    )
+                                    : (
+                                        <div className="flex items-center justify-center w-full h-full max-w-2xl max-h-[500px] bg-black/50 rounded-lg border-2 border-white/20 backdrop-blur-sm pointer-events-auto">
+                                            <div className="text-white/50 p-8 text-center">
+                                                <span className="text-xl">
+                                                    Experiment {id}{" "}
+                                                    Visualization (No Data)
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
+                            </>
+                        )}
+                </main>
 
-                {/* Home Button - Top Left */}
-                {/* Image is ~824x282 ~ 2.92 aspect ratio */}
-                <div className="absolute top-6 left-6 pointer-events-auto transition-transform hover:scale-105 active:scale-95">
-                    <Link href="/">
-                        <Image
-                            src="/experiment/home.png"
-                            alt="Home"
-                            width={200}
-                            height={70}
-                            className="h-16 w-auto md:h-20 drop-shadow-lg"
-                        />
-                    </Link>
-                </div>
-
-                {/* Next Button - Bottom Right */}
-                {/* Image is ~862x298 ~ 2.89 aspect ratio */}
-                <div className="absolute bottom-6 right-6 pointer-events-auto transition-transform hover:scale-105 active:scale-95">
-                    <a
-                        onClick={() => {
-                            // get random, same language.
-                        }}
-                    >
-                        <Image
-                            src="/experiment/next.png"
-                            alt="Next Experiment"
-                            width={200}
-                            height={70}
-                            className="h-16 w-auto md:h-24 drop-shadow-lg"
-                        />
-                    </a>
-                </div>
+                {/* Footer: Next Button */}
+                <footer className="flex w-full items-end justify-end pointer-events-none shrink-0 z-40">
+                    {/* Next Button - Bottom Right */}
+                    <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
+                        <button onClick={handleNext}>
+                            <Image
+                                src="/experiment/next.png"
+                                alt="Next Experiment"
+                                width={200}
+                                height={70}
+                                className="h-16 w-auto md:h-24 drop-shadow-lg"
+                            />
+                        </button>
+                    </div>
+                </footer>
             </div>
         </div>
     );
