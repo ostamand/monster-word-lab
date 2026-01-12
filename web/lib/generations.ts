@@ -73,3 +73,26 @@ export async function getDailyGenerationsCount() {
         return null;
     }
 }
+
+export async function getGenerationById(
+    id: string,
+): Promise<GenerationOutput | null> {
+    try {
+        const response = await fetch(
+            `${configs.apiEndpoint}/generations/${id}`,
+        );
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json() as GenerationOutput;
+        return data;
+    } catch (error) {
+        console.error(
+            `Error while trying to get generation by ID (${id}):`,
+            error,
+        );
+        return null;
+    }
+}

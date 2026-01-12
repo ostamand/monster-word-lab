@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, ReactNode, useContext, useState } from "react";
 
 import { GenerationOutput, PossibleLanguages } from "@/lib/generations";
@@ -29,6 +31,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             age,
             completedIds,
         );
+
         if (!generation) {
             // we are done
             setState("done");
@@ -47,7 +50,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setCompletedIds([]);
         setLanguage(language);
         setAge(age);
-        getNextGeneration();
     };
 
     const values = {

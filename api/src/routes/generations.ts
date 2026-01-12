@@ -1,11 +1,12 @@
 import express, { type Request, type Response } from "express";
 
 import {
+    type GenerationInput,
+    getGenerationById,
     getRandomGeneration,
     getTodayGenerationsCount,
 } from "../models/generations.js";
 import configs from "../configs.js";
-import { type GenerationInput } from "../models/generations.js";
 import { sendGeneration } from "../lib/generations.js";
 
 const generationsRouter = express.Router();
@@ -58,7 +59,7 @@ generationsRouter.get("/random", async (req: Request, res: Response) => {
 
 generationsRouter.get("/count/today", async (req: Request, res: Response) => {
     const count = await getTodayGenerationsCount();
-    if (count) {
+    if (count !== null) {
         return res.json({ count });
     } else {
         res.status(500).json({
@@ -96,6 +97,36 @@ generationsRouter.post("/", async (req: Request, res: Response) => {
     }
 
     return res.status(200).json(generationOutput);
+});
+
+generationsRouter.get("/:id", async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({
+                message: "ID parameter is required.",
+            });
+        }
+
+        const generation = await getGenerationById(id as string);
+
+        if (generation) {
+            return res.json(generation);
+        } else {
+            return res.status(404).json({
+                message: `Generation with ID ${id} not found.`,
+            });
+        }
+    } catch (error) {
+        console.error(
+            `Error in GET /generations/${req.params.id} route:`,
+            error,
+        );
+        return res.status(500).json({
+            message: "Something went wrong while fetching the generation.",
+        });
+    }
 });
 
 export default generationsRouter;

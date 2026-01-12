@@ -3,15 +3,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { redirect } from "next/navigation";
+
+import { useSessionContext } from "@/contexts/session.contexts";
+import { PossibleLanguages } from "@/lib/generations";
 
 export default function StartPage() {
-    const [selectedLanguage, setSelectedLanguage] = useState<string>("english");
-    const [selectedAge, setSelectedAge] = useState<string>("5");
+    const [selectedLanguage, setSelectedLanguage] = useState<PossibleLanguages>(
+        "en",
+    );
+    const [selectedAge, setSelectedAge] = useState<number>(5);
     const [theme, setTheme] = useState<string>("");
     const [targetWord, setTargetWord] = useState<string>("");
 
-    const languages = ["english", "french", "spanish"];
-    const ages = ["3", "4", "5", "6", "7"];
+    const { startSession } = useSessionContext();
+
+    const languages: PossibleLanguages[] = ["en", "fr", "es"];
+    const ages = [3, 4, 5, 6, 7];
+
+    const handleGeneration = () => {
+        // start new session
+        // redirect to generate page which will generate a new experiment based on the session content
+        startSession(selectedLanguage, selectedAge);
+        redirect("/generate");
+    };
 
     return (
         <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
@@ -42,9 +57,11 @@ export default function StartPage() {
 
             {/* Content */}
             <main className="relative z-30 flex min-h-screen flex-col items-center justify-start pb-8 pt-12 sm:pb-12 sm:pt-20 md:pb-16 md:pt-32 pointer-events-none gap-8">
-
                 {/* Title Link */}
-                <div className="animate-fade-in-down opacity-0 pointer-events-auto" style={{ animationDelay: "0ms" }}>
+                <div
+                    className="animate-fade-in-down opacity-0 pointer-events-auto"
+                    style={{ animationDelay: "0ms" }}
+                >
                     <Link href="/">
                         <Image
                             src="/landing/title.png"
@@ -58,17 +75,25 @@ export default function StartPage() {
                 </div>
 
                 {/* Panel for Content */}
-                <div className="flex flex-col items-center gap-8 p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl max-w-4xl w-full mx-4 animate-fade-in-up opacity-0 pointer-events-auto" style={{ animationDelay: "150ms" }}>
-
+                <div
+                    className="flex flex-col items-center gap-8 p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl max-w-4xl w-full mx-4 animate-fade-in-up opacity-0 pointer-events-auto"
+                    style={{ animationDelay: "150ms" }}
+                >
                     {/* Language Selection */}
                     <div className="flex flex-col items-center gap-4">
-                        <h2 className="text-white text-2xl font-bold drop-shadow-md">Choose Language</h2>
+                        <h2 className="text-white text-2xl font-bold drop-shadow-md">
+                            Choose Language
+                        </h2>
                         <div className="flex gap-4">
                             {languages.map((lang) => (
                                 <button
                                     key={lang}
                                     onClick={() => setSelectedLanguage(lang)}
-                                    className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${selectedLanguage === lang ? 'scale-110 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]' : 'opacity-80 hover:opacity-100'}`}
+                                    className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${
+                                        selectedLanguage === lang
+                                            ? "scale-110 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]"
+                                            : "opacity-80 hover:opacity-100"
+                                    }`}
                                 >
                                     <Image
                                         src={`/start/${lang}.png`}
@@ -84,13 +109,19 @@ export default function StartPage() {
 
                     {/* Age Selection */}
                     <div className="flex flex-col items-center gap-4">
-                        <h2 className="text-white text-2xl font-bold drop-shadow-md">Select Age</h2>
+                        <h2 className="text-white text-2xl font-bold drop-shadow-md">
+                            Select Age
+                        </h2>
                         <div className="flex gap-4">
                             {ages.map((age) => (
                                 <button
                                     key={age}
                                     onClick={() => setSelectedAge(age)}
-                                    className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${selectedAge === age ? 'scale-110 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]' : 'opacity-80 hover:opacity-100'}`}
+                                    className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${
+                                        selectedAge === age
+                                            ? "scale-115 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]"
+                                            : "opacity-80 hover:opacity-100"
+                                    }`}
                                 >
                                     <Image
                                         src={`/start/btn-${age}.png`}
@@ -107,7 +138,12 @@ export default function StartPage() {
                     {/* Inputs */}
                     <div className="flex flex-col items-center gap-4 w-full max-w-md px-4">
                         <div className="w-full">
-                            <label className="block text-white text-lg font-bold mb-2 drop-shadow-md" htmlFor="theme">Theme (Optional)</label>
+                            <label
+                                className="block text-white text-lg font-bold mb-2 drop-shadow-md"
+                                htmlFor="theme"
+                            >
+                                Theme (Optional)
+                            </label>
                             <input
                                 id="theme"
                                 type="text"
@@ -118,7 +154,12 @@ export default function StartPage() {
                             />
                         </div>
                         <div className="w-full">
-                            <label className="block text-white text-lg font-bold mb-2 drop-shadow-md" htmlFor="targetWord">Target Word (Optional)</label>
+                            <label
+                                className="block text-white text-lg font-bold mb-2 drop-shadow-md"
+                                htmlFor="targetWord"
+                            >
+                                Target Word (Optional)
+                            </label>
                             <input
                                 id="targetWord"
                                 type="text"
@@ -139,12 +180,11 @@ export default function StartPage() {
                                 width={400}
                                 height={133}
                                 className="w-[280px] md:w-[360px] h-auto drop-shadow-xl group-hover:drop-shadow-2xl transition-all"
+                                onClick={handleGeneration}
                             />
                         </button>
                     </div>
-
                 </div>
-
             </main>
         </div>
     );

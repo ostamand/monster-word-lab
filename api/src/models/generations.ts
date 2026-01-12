@@ -73,6 +73,30 @@ export async function getLatestGeneration() {
     }
 }
 
+export async function getGenerationById(
+    id: string,
+): Promise<GenerationOutput | null> {
+    try {
+        const docRef = db.collection(configs.generationCollection).doc(id);
+        const doc = await docRef.get();
+
+        if (!doc.exists) {
+            return null;
+        }
+
+        const data = doc.data();
+
+        const generation = {
+            ...data,
+        } as GenerationOutput;
+
+        return await signGenerationOutput(generation);
+    } catch (error) {
+        console.error(`Error getting generation by ID (${id}):`, error);
+        return null;
+    }
+}
+
 export async function getRandomGeneration(
     excludeIds: string[] = [],
     filters: {
