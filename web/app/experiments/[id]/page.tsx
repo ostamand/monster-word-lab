@@ -149,7 +149,7 @@ export default function ExperimentPage() {
                                             alt={generation.userInput
                                                 .targetWord ||
                                                 "Experiment Generation"}
-                                            className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg border-2 border-white/20 shadow-2xl bg-black/50 pointer-events-auto"
+                                            className="w-auto h-auto max-w-full max-h-full object-contain rounded-3xl border-4 border-sky-400 shadow-[0_0_40px_rgba(56,189,248,0.7)] bg-black/50 pointer-events-auto"
                                         />
                                     )
                                     : (
