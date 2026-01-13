@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from "express";
+import {z} from "zod";
 
 import {
     type GenerationInput,
@@ -12,32 +13,24 @@ import { signGenerationOutput } from "../lib/storage.js";
 
 const generationsRouter = express.Router();
 
-generationsRouter.get("/random", async (req: Request, res: Response) => {
+export const RandomGenerationSchema = z.object({
+  excludeIds: z.array(z.string()).default([]),
+  language: z.enum(["en", "es", "fr"]).optional(),
+  age: z.number().int().min(3).optional(), 
+});
+
+generationsRouter.post("/random", async (req: Request, res: Response) => {
     try {
-        // parse excludeIds
-        // Supports: /random?excludeIds=abc,123  OR  /random?excludeIds=abc&excludeIds=123
-        let excludeIds: string[] = [];
-        const { excludeIds: rawIds } = req.query;
-        if (typeof rawIds === "string") {
-            // Case: ?excludeIds=abc,123
-            excludeIds = rawIds.split(",");
-        } else if (Array.isArray(rawIds)) {
-            // Case: ?excludeIds=abc&excludeIds=123
-            excludeIds = rawIds as string[];
+        const validation = RandomGenerationSchema.safeParse(req.body);
+        if (!validation.success) {
+            const errorTree = z.treeifyError(validation.error);
+            return res.status(400).json({
+                message: "Invalid request data",
+                errors: errorTree, 
+            });
         }
 
-        // parse age
-        let age: number | undefined;
-        if (req.query.age) {
-            // Base 10 parsing
-            const parsed = parseInt(req.query.age as string, 10);
-            if (!isNaN(parsed)) {
-                age = parsed;
-            }
-        }
-
-        // parse language
-        const language = req.query.language as "en" | "es" | "fr" | undefined;
+        const { excludeIds, language, age } = validation.data;
 
         const randomGen = await getRandomGeneration(
             excludeIds,
@@ -45,9 +38,8 @@ generationsRouter.get("/random", async (req: Request, res: Response) => {
         );
 
         if (randomGen) {
-            return res.json(randomGen);
+            return res.json(await signGenerationOutput(randomGen));
         } else {
-            // 404 implies we couldn't find a doc (DB empty or all excluded)
             return res.status(404).json({ message: "No generation found." });
         }
     } catch (error) {

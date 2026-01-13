@@ -67,19 +67,19 @@ export async function getRandomGeneration(
     excludeIds?: string[],
 ): Promise<GenerationOutput | null> {
     try {
-        let url =
-            `${configs.apiEndpoint}/generations/random?language=${language}`;
-        if (age) {
-            url += `&age=${age}`;
-        }
-        if (excludeIds && excludeIds.length > 0) {
-            let excludedString = excludeIds.reduce((agg, value) => {
-                return agg + `,${value}`;
-            }, "");
-            excludedString = excludedString.slice(1);
-            url += `&excludeIds=${excludedString}`;
-        }
-        const response = await fetch(url);
+        const url = `${configs.apiEndpoint}/generations/random`;
+        const body = {
+            language,
+            age: age ?? undefined, 
+            excludeIds: excludeIds || [],
+        };
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
         if (!response.ok) {
             return null;
         }
