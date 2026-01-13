@@ -94,7 +94,7 @@ generationsRouter.post("/", async (req: Request, res: Response) => {
 
     const currentCount = await getTodayGenerationsCount();
 
-    if (!currentCount) {
+    if (currentCount === null) {
         return res.status(500).json({
             message: "Something went wrong, could not connect to database.",
         });

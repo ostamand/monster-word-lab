@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { redirect, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { GenerationOutput, getGenerationById } from "@/lib/generations";
 
 import { useSessionContext } from "@/contexts/session.contexts";
 import LoadingAnimation from "@/components/LoadingAnimation";
@@ -12,9 +11,9 @@ export default function ExperimentPage() {
     const params = useParams();
     const { id } = params;
 
-    const [generation, setGeneration] = useState<GenerationOutput | null>(null);
     const [loading, setLoading] = useState(true);
-    const { state, startSession, getNextGeneration, clearSession } =
+
+    const { state, startSession, getNextGeneration, getGenerationFromId, clearSession, generation } =
         useSessionContext();
 
     useEffect(() => {
@@ -22,11 +21,10 @@ export default function ExperimentPage() {
             setLoading(true);
             try {
                 if (typeof id === "string") {
-                    const gen = await getGenerationById(id);
-                    setGeneration(gen);
-                    // check if session is defined
-                    if (gen && state === "waiting") {
-                        startSession(gen.userInput.language, gen.userInput.age);
+                    const generationOutput = await getGenerationFromId(id);
+                    // check if session is already started or not.
+                    if (generationOutput && state !== "running") {
+                        startSession(generationOutput.userInput.language, generationOutput.userInput.age);
                     }
                 }
             } catch (error) {
@@ -49,13 +47,11 @@ export default function ExperimentPage() {
 
     async function handleNext() {
         setLoading(true);
-        const generation = await getNextGeneration();
-        if (!generation) {
+        await getNextGeneration();
+        if (state !== "running") {
             // should redirect to done, for now clear session and redirect to home.
-            clearSession();
             redirect("/");
         }
-        setGeneration(generation);
         setLoading(false);
     }
 

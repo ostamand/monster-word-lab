@@ -33,7 +33,7 @@ type GenerationResponse = {
 
 export async function sendGeneration(
     data: GenerationInput,
-): Promise<GenerationResponse | null> {
+): Promise<{ success: true; data: GenerationResponse } | { success: false; error: string; status: number }> {
     try {
         const response = await fetch(`${configs.apiEndpoint}/generations`, {
             method: "POST",
@@ -43,21 +43,20 @@ export async function sendGeneration(
             body: JSON.stringify(data),
         });
 
-        if (!response.ok) {
-            // Log the error status if the server responds with an error
-            const errorText = await response.text();
-            console.error(
-                `Generation request failed: ${response.status} - ${errorText}`,
-            );
-            return null;
+        if (response.ok) {
+            const result = await response.json() as GenerationResponse;
+            return { success: true, data: result };
         }
 
-        const result = await response.json() as GenerationResponse;
-
-        return result;
+        const errorBody = await response.json().catch(() => ({ message: "Unknown error" }));
+        return { 
+            success: false, 
+            status: response.status, 
+            error: errorBody.message || response.statusText 
+        };
     } catch (error) {
         console.error("Error while trying to send generation request:", error);
-        return null;
+        return { success: false, status: 0, error: "Network error" };
     }
 }
 

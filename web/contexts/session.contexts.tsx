@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 import { GenerationOutput, PossibleLanguages } from "@/lib/generations";
-import { getRandomGeneration } from "@/lib/generations";
+import { getRandomGeneration, getGenerationById } from "@/lib/generations";
 
 type SessionState = "waiting" | "running" | "done";
 
@@ -21,6 +21,7 @@ type SessionContextType = {
         targetWord?: string | null,
     ) => void;
     getNextGeneration: (successful?: boolean) => Promise<GenerationOutput | null>;
+    getGenerationFromId: (id: string) => Promise<GenerationOutput | null>;
     clearSession: () => void;
 };
 
@@ -47,6 +48,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
 
     const getNextGeneration = async (successful?: boolean) => {
+        if(state !== "running") return null;
+
         // successful = was the last generation succesful or not?
         if(generation) {
             setHistory([...history, {generation, successful}]);
@@ -71,6 +74,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
         return generation;
     };
+
+    const getGenerationFromId = async (id: string) => {
+        const generationOutput = await getGenerationById(id);
+        setGeneration(generationOutput)
+        return generationOutput;
+    }
 
     const startSession = (
         language: PossibleLanguages,
@@ -99,6 +108,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         targetWord,
         startSession,
         getNextGeneration,
+        getGenerationFromId,
         clearSession,
     };
 
