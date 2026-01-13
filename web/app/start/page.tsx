@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { redirect } from "next/navigation";
 
@@ -16,7 +15,7 @@ export default function StartPage() {
     const [theme, setTheme] = useState<string | null>(null);
     const [targetWord, setTargetWord] = useState<string | null>(null);
 
-    const { startSession } = useSessionContext();
+    const { startSession, clearSession } = useSessionContext();
 
     const languages: PossibleLanguages[] = ["en", "fr", "es"];
     const ages = [3, 4, 5, 6, 7];
@@ -29,7 +28,7 @@ export default function StartPage() {
     };
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
+        <div className="relative h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
             {/* Background */}
             <div className="absolute inset-0 z-0">
                 <Image
@@ -43,7 +42,7 @@ export default function StartPage() {
             </div>
 
             {/* Foreground */}
-            <div className="absolute inset-4 z-10 overflow-hidden rounded-[2.5rem] border-4 border-white/10 shadow-2xl sm:inset-6 md:inset-8">
+            <div className="absolute inset-4 z-10 overflow-hidden rounded-[2.5rem] border-4 border-white/10 shadow-2xl sm:inset-6 md:inset-8 pointer-events-none">
                 <Image
                     src="/start/foreground.jpeg"
                     alt="Monster Word Lab Start Foreground"
@@ -52,140 +51,149 @@ export default function StartPage() {
                     priority
                     quality={100}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
             </div>
 
-            {/* Content */}
-            <main className="relative z-30 flex min-h-screen flex-col items-center justify-start pb-8 pt-12 sm:pb-12 sm:pt-20 md:pb-16 md:pt-32 pointer-events-none gap-8">
-                {/* Title Link */}
-                <div
-                    className="animate-fade-in-down opacity-0 pointer-events-auto"
-                    style={{ animationDelay: "0ms" }}
-                >
-                    <Link href="/">
-                        <Image
-                            src="/landing/title.png"
-                            alt="Monster Word Lab"
-                            width={800}
-                            height={400}
-                            className="w-[300px] md:w-[500px] lg:w-[650px] h-auto drop-shadow-2xl transition-transform hover-wobble-custom cursor-pointer"
-                            priority
-                        />
-                    </Link>
-                </div>
-
-                {/* Panel for Content */}
-                <div
-                    className="flex flex-col items-center gap-8 p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl max-w-4xl w-full mx-4 animate-fade-in-up opacity-0 pointer-events-auto"
-                    style={{ animationDelay: "150ms" }}
-                >
-                    {/* Language Selection */}
-                    <div className="flex flex-col items-center gap-4">
-                        <h2 className="text-white text-2xl font-bold drop-shadow-md">
-                            Choose Language
-                        </h2>
-                        <div className="flex gap-4">
-                            {languages.map((lang) => (
-                                <button
-                                    key={lang}
-                                    onClick={() => setSelectedLanguage(lang)}
-                                    className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${
-                                        selectedLanguage === lang
-                                            ? "scale-110 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]"
-                                            : "opacity-80 hover:opacity-100"
-                                    }`}
-                                >
-                                    <Image
-                                        src={`/start/${lang}.png`}
-                                        alt={lang}
-                                        width={100}
-                                        height={100}
-                                        className="w-20 md:w-24 h-auto"
-                                    />
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Age Selection */}
-                    <div className="flex flex-col items-center gap-4">
-                        <h2 className="text-white text-2xl font-bold drop-shadow-md">
-                            Select Age
-                        </h2>
-                        <div className="flex gap-4">
-                            {ages.map((age) => (
-                                <button
-                                    key={age}
-                                    onClick={() => setSelectedAge(age)}
-                                    className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${
-                                        selectedAge === age
-                                            ? "scale-115 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]"
-                                            : "opacity-80 hover:opacity-100"
-                                    }`}
-                                >
-                                    <Image
-                                        src={`/start/btn-${age}.png`}
-                                        alt={`Age ${age}`}
-                                        width={80}
-                                        height={80}
-                                        className="w-16 md:w-20 h-auto"
-                                    />
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Inputs */}
-                    <div className="flex flex-col items-center gap-4 w-full max-w-md px-4">
-                        <div className="w-full">
-                            <label
-                                className="block text-white text-lg font-bold mb-2 drop-shadow-md"
-                                htmlFor="theme"
-                            >
-                                Theme (Optional)
-                            </label>
-                            <input
-                                id="theme"
-                                type="text"
-                                value={theme || ""}
-                                onChange={(e) => setTheme(e.target.value)}
-                                placeholder="e.g. Space, Dinosaurs"
-                                className="w-full px-4 py-3 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-violet-400 focus:bg-white/30 backdrop-blur-sm transition-all shadow-lg"
-                            />
-                        </div>
-                        <div className="w-full">
-                            <label
-                                className="block text-white text-lg font-bold mb-2 drop-shadow-md"
-                                htmlFor="targetWord"
-                            >
-                                Target Word (Optional)
-                            </label>
-                            <input
-                                id="targetWord"
-                                type="text"
-                                value={targetWord || ""}
-                                onChange={(e) => setTargetWord(e.target.value)}
-                                placeholder="e.g. Gravity"
-                                className="w-full px-4 py-3 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-violet-400 focus:bg-white/30 backdrop-blur-sm transition-all shadow-lg"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Start Button */}
-                    <div className="mt-4">
-                        <button className="group relative transition-transform hover:scale-105 active:scale-95 hover-wobble-custom">
+            {/* Main Layout (z-20) */}
+            <div className="relative z-20 flex h-full flex-col p-4 md:p-6 pointer-events-none">
+                {/* Header: Home Button */}
+                <header className="absolute top-10 left-10 z-40 md:top-16 md:left-16">
+                    {/* Home Button - Top Left */}
+                    <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
+                        <a
+                            onClick={() => {
+                                clearSession();
+                                redirect("/");
+                            }}
+                            className="cursor-pointer"
+                        >
                             <Image
-                                src="/start/start-btn.png"
-                                alt="Start Experiment"
-                                width={400}
-                                height={133}
-                                className="w-[280px] md:w-[360px] h-auto drop-shadow-xl group-hover:drop-shadow-2xl transition-all"
-                                onClick={handleGeneration}
+                                src="/experiment/home.png"
+                                alt="Home"
+                                width={200}
+                                height={70}
+                                className="h-16 w-auto md:h-20 drop-shadow-lg"
                             />
-                        </button>
+                        </a>
                     </div>
-                </div>
-            </main>
+                </header>
+
+                {/* Content: Panel on the Right */}
+                <main className="flex flex-1 items-center justify-end w-full min-h-0 pr-4 md:pr-12">
+                    {/* Panel for Content */}
+                    <div
+                        className="flex flex-col items-center gap-6 p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl max-w-md w-full animate-fade-in-up opacity-0 pointer-events-auto max-h-full overflow-y-auto"
+                        style={{ animationDelay: "150ms" }}
+                    >
+                        {/* Language Selection */}
+                        <div className="flex flex-col items-center gap-2">
+                            <h2 className="text-white text-xl font-bold drop-shadow-md">
+                                Choose Language
+                            </h2>
+                            <div className="flex gap-4">
+                                {languages.map((lang) => (
+                                    <button
+                                        key={lang}
+                                        onClick={() => setSelectedLanguage(lang)}
+                                        className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${
+                                            selectedLanguage === lang
+                                                ? "scale-110 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]"
+                                                : "opacity-80 hover:opacity-100"
+                                        }`}
+                                    >
+                                        <Image
+                                            src={`/start/${lang}.png`}
+                                            alt={lang}
+                                            width={100}
+                                            height={100}
+                                            className="w-16 md:w-20 h-auto"
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Age Selection */}
+                        <div className="flex flex-col items-center gap-2">
+                            <h2 className="text-white text-xl font-bold drop-shadow-md">
+                                Select Age
+                            </h2>
+                            <div className="flex gap-2">
+                                {ages.map((age) => (
+                                    <button
+                                        key={age}
+                                        onClick={() => setSelectedAge(age)}
+                                        className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${
+                                            selectedAge === age
+                                                ? "scale-115 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]"
+                                                : "opacity-80 hover:opacity-100"
+                                        }`}
+                                    >
+                                        <Image
+                                            src={`/start/btn-${age}.png`}
+                                            alt={`Age ${age}`}
+                                            width={80}
+                                            height={80}
+                                            className="w-12 md:w-16 h-auto"
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Inputs */}
+                        <div className="flex flex-col items-center gap-3 w-full max-w-sm px-2">
+                            <div className="w-full">
+                                <label
+                                    className="block text-white text-md font-bold mb-1 drop-shadow-md"
+                                    htmlFor="theme"
+                                >
+                                    Theme (Optional)
+                                </label>
+                                <input
+                                    id="theme"
+                                    type="text"
+                                    value={theme || ""}
+                                    onChange={(e) => setTheme(e.target.value)}
+                                    placeholder="e.g. Space, Dinosaurs"
+                                    className="w-full px-4 py-2 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-violet-400 focus:bg-white/30 backdrop-blur-sm transition-all shadow-lg text-sm"
+                                />
+                            </div>
+                            <div className="w-full">
+                                <label
+                                    className="block text-white text-md font-bold mb-1 drop-shadow-md"
+                                    htmlFor="targetWord"
+                                >
+                                    Target Word (Optional)
+                                </label>
+                                <input
+                                    id="targetWord"
+                                    type="text"
+                                    value={targetWord || ""}
+                                    onChange={(e) =>
+                                        setTargetWord(e.target.value)}
+                                    placeholder="e.g. Gravity"
+                                    className="w-full px-4 py-2 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-violet-400 focus:bg-white/30 backdrop-blur-sm transition-all shadow-lg text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Start Button */}
+                        <div className="mt-2">
+                            <button className="group relative transition-transform hover:scale-105 active:scale-95 hover-wobble-custom">
+                                <Image
+                                    src="/start/start-btn.png"
+                                    alt="Start Experiment"
+                                    width={400}
+                                    height={133}
+                                    className="w-[200px] md:w-[260px] h-auto drop-shadow-xl group-hover:drop-shadow-2xl transition-all"
+                                    onClick={handleGeneration}
+                                />
+                            </button>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </div>
     );
 }
