@@ -25,6 +25,42 @@ export type GenerationOutput = {
     userInput: GenerationInput;
 };
 
+type GenerationResponse = {
+    id: string;
+    final_image_gcs_path: string | undefined;
+    final_audio_gcs_path: string | undefined;
+};
+
+export async function sendGeneration(
+    data: GenerationInput,
+): Promise<GenerationResponse | null> {
+    try {
+        const response = await fetch(`${configs.apiEndpoint}/generations`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            // Log the error status if the server responds with an error
+            const errorText = await response.text();
+            console.error(
+                `Generation request failed: ${response.status} - ${errorText}`,
+            );
+            return null;
+        }
+
+        const result = await response.json() as GenerationResponse;
+
+        return result;
+    } catch (error) {
+        console.error("Error while trying to send generation request:", error);
+        return null;
+    }
+}
+
 export async function getRandomGeneration(
     language: PossibleLanguages,
     age?: number | null,
@@ -36,7 +72,7 @@ export async function getRandomGeneration(
         if (age) {
             url += `&age=${age}`;
         }
-        if (excludeIds) {
+        if (excludeIds && excludeIds.length > 0) {
             let excludedString = excludeIds.reduce((agg, value) => {
                 return agg + `,${value}`;
             }, "");

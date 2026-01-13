@@ -1,23 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-    GenerationOutput,
-    getGenerationById,
-    getRandomGeneration,
-} from "@/lib/generations";
+import { GenerationOutput, getGenerationById } from "@/lib/generations";
+
+import { useSessionContext } from "@/contexts/session.contexts";
 import LoadingAnimation from "@/components/LoadingAnimation";
 
 export default function ExperimentPage() {
     const params = useParams();
-    const router = useRouter();
     const { id } = params;
 
     const [generation, setGeneration] = useState<GenerationOutput | null>(null);
     const [loading, setLoading] = useState(true);
+    const { state, startSession, getNextGeneration, clearSession } =
+        useSessionContext();
 
     useEffect(() => {
         async function fetchGeneration() {
@@ -26,6 +24,10 @@ export default function ExperimentPage() {
                 if (typeof id === "string") {
                     const gen = await getGenerationById(id);
                     setGeneration(gen);
+                    // check if session is defined
+                    if (gen && state === "waiting") {
+                        startSession(gen.userInput.language, gen.userInput.age);
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch generation", error);
@@ -46,19 +48,15 @@ export default function ExperimentPage() {
     }
 
     async function handleNext() {
-        if (!generation) return;
-        try {
-            const nextGen = await getRandomGeneration(
-                generation.userInput.language,
-                generation.userInput.age,
-                [generation.id]
-            );
-            if (nextGen) {
-                router.push(`/experiments/${nextGen.id}`);
-            }
-        } catch (error) {
-            console.error("Failed to get next generation", error);
+        setLoading(true);
+        const generation = await getNextGeneration();
+        if (!generation) {
+            // should redirect to done, for now clear session and redirect to home.
+            clearSession();
+            redirect("/");
         }
+        setGeneration(generation);
+        setLoading(false);
     }
 
     return (
@@ -89,12 +87,16 @@ export default function ExperimentPage() {
 
             {/* Main Layout (z-20) */}
             <div className="relative z-20 flex h-full flex-col justify-between p-4 md:p-6">
-                
                 {/* Header: Home & Speech */}
                 <header className="flex w-full items-start justify-between pointer-events-none shrink-0 z-40">
                     {/* Home Button - Top Left */}
                     <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
-                        <Link href="/">
+                        <a
+                            onClick={() => {
+                                clearSession();
+                                redirect("/");
+                            }}
+                        >
                             <Image
                                 src="/experiment/home.png"
                                 alt="Home"
@@ -102,14 +104,18 @@ export default function ExperimentPage() {
                                 height={70}
                                 className="h-16 w-auto md:h-20 drop-shadow-lg"
                             />
-                        </Link>
+                        </a>
                     </div>
 
                     {/* Speech Button - Top Right */}
                     <div className="pointer-events-auto transition-transform hover:scale-110 active:scale-95">
                         <button
                             onClick={playAudio}
-                            className={`focus:outline-none ${!generation?.final_audio_gcs_path ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`focus:outline-none ${
+                                !generation?.final_audio_gcs_path
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : ""
+                            }`}
                             disabled={!generation?.final_audio_gcs_path}
                         >
                             <Image
@@ -126,15 +132,22 @@ export default function ExperimentPage() {
                 {/* Main Content Area */}
                 <main className="flex flex-1 items-center justify-center min-h-0 w-full p-4 pointer-events-none z-30">
                     {loading
-                        ? <LoadingAnimation message="Loading Experiment..." className="pointer-events-auto" />
+                        ? (
+                            <LoadingAnimation
+                                message="Loading Experiment..."
+                                className="pointer-events-auto"
+                            />
+                        )
                         : (
                             <>
                                 {generation?.final_image_gcs_path
                                     ? (
                                         /* eslint-disable-next-line @next/next/no-img-element */
                                         <img
-                                            src={generation.final_image_gcs_path}
-                                            alt={generation.userInput.targetWord ||
+                                            src={generation
+                                                .final_image_gcs_path}
+                                            alt={generation.userInput
+                                                .targetWord ||
                                                 "Experiment Generation"}
                                             className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg border-2 border-white/20 shadow-2xl bg-black/50 pointer-events-auto"
                                         />

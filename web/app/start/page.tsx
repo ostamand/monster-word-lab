@@ -13,8 +13,8 @@ export default function StartPage() {
         "en",
     );
     const [selectedAge, setSelectedAge] = useState<number>(5);
-    const [theme, setTheme] = useState<string>("");
-    const [targetWord, setTargetWord] = useState<string>("");
+    const [theme, setTheme] = useState<string | null>(null);
+    const [targetWord, setTargetWord] = useState<string | null>(null);
 
     const { startSession } = useSessionContext();
 
@@ -24,7 +24,7 @@ export default function StartPage() {
     const handleGeneration = () => {
         // start new session
         // redirect to generate page which will generate a new experiment based on the session content
-        startSession(selectedLanguage, selectedAge);
+        startSession(selectedLanguage, selectedAge, theme, targetWord);
         redirect("/generate");
     };
 
@@ -147,7 +147,7 @@ export default function StartPage() {
                             <input
                                 id="theme"
                                 type="text"
-                                value={theme}
+                                value={theme || ""}
                                 onChange={(e) => setTheme(e.target.value)}
                                 placeholder="e.g. Space, Dinosaurs"
                                 className="w-full px-4 py-3 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-violet-400 focus:bg-white/30 backdrop-blur-sm transition-all shadow-lg"
@@ -163,7 +163,7 @@ export default function StartPage() {
                             <input
                                 id="targetWord"
                                 type="text"
-                                value={targetWord}
+                                value={targetWord || ""}
                                 onChange={(e) => setTargetWord(e.target.value)}
                                 placeholder="e.g. Gravity"
                                 className="w-full px-4 py-3 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-violet-400 focus:bg-white/30 backdrop-blur-sm transition-all shadow-lg"

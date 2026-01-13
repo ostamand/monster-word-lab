@@ -11,9 +11,19 @@ type SessionContextType = {
     state: SessionState;
     generation: GenerationOutput | null;
     completedIds: string[];
+    setComplete: (id: string) => void;
     language: PossibleLanguages | null;
     age: number | null;
-    startSession: (language: PossibleLanguages, age: number | null) => void;
+    theme: string | null;
+    targetWord: string | null;
+    startSession: (
+        language: PossibleLanguages,
+        age: number | null,
+        theme?: string | null,
+        targetWord?: string | null,
+    ) => void;
+    getNextGeneration: () => Promise<GenerationOutput | null>;
+    clearSession: () => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -24,11 +34,22 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const [completedIds, setCompletedIds] = useState<string[]>([]);
     const [language, setLanguage] = useState<PossibleLanguages | null>(null);
     const [age, setAge] = useState<number | null>(null);
+    const [theme, setTheme] = useState<string | null>(null);
+    const [targetWord, setTargetWord] = useState<string | null>(null);
+
+    const clearSession = () => {
+        setState("waiting");
+        setCompletedIds([]);
+        setAge(null);
+        setLanguage(null);
+        setTheme(null);
+        setTargetWord(null);
+    };
 
     const getNextGeneration = async () => {
         const generation = await getRandomGeneration(
             language || "en", // will always be defined anyway
-            age,
+            null, // for now skip age
             completedIds,
         );
 
@@ -45,20 +66,42 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         return generation;
     };
 
-    const startSession = (language: PossibleLanguages, age: number | null) => {
+    const startSession = (
+        language: PossibleLanguages,
+        age: number | null,
+        theme?: string | null,
+        targetWord?: string | null,
+    ) => {
         setState("running");
         setCompletedIds([]);
         setLanguage(language);
         setAge(age);
+        if (theme !== undefined) {
+            setTheme(theme);
+        }
+        if (targetWord !== undefined) {
+            setTheme(targetWord);
+        }
+    };
+
+    const setComplete = (id: string) => {
+        if (!completedIds.includes(id)) {
+            setCompletedIds([...completedIds, id]);
+        }
     };
 
     const values = {
         state,
         generation,
         completedIds,
+        setComplete,
         language,
         age,
+        theme,
+        targetWord,
         startSession,
+        getNextGeneration,
+        clearSession,
     };
 
     return (

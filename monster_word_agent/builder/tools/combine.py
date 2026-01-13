@@ -60,8 +60,8 @@ def create_composite_card_tool(id: str, image_path: str, sentence: str) -> str:
         draw = ImageDraw.Draw(base)
 
         # Configure Font
-        # Font size: ~40% of the scrim height ensures it fits comfortably
-        font_size = int(scrim_height * 0.40)
+        # Font size: ~30% of the scrim height ensures it fits comfortably
+        font_size = int(scrim_height * 0.30)
 
         try:
             # Try to load a standard font (Adjust path for your container OS)

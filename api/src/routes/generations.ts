@@ -8,6 +8,7 @@ import {
 } from "../models/generations.js";
 import configs from "../configs.js";
 import { sendGeneration } from "../lib/generations.js";
+import { signGenerationOutput } from "../lib/storage.js";
 
 const generationsRouter = express.Router();
 
@@ -68,10 +69,35 @@ generationsRouter.get("/count/today", async (req: Request, res: Response) => {
     }
 });
 
+type GenerateResponse = {
+    id: string;
+    final_image_gcs_path: string | undefined;
+    final_audio_gcs_path: string | undefined;
+};
+
 generationsRouter.post("/", async (req: Request, res: Response) => {
     const data = req.body as GenerationInput;
     if (!data) {
         return res.status(400).json({ message: "Bad request for generation." });
+    }
+
+    // mock generation flow (mostly for dev). will return a random already existing generation
+    if (configs.mockGeneration) {
+        const randomGeneration = await getRandomGeneration();
+
+        if (!randomGeneration) {
+            return res.status(500).json({
+                message: "Something went wrong, could not connect to database.",
+            });
+        }
+
+        const randomReponse: GenerateResponse = {
+            id: randomGeneration.id,
+            final_image_gcs_path: randomGeneration.final_image_gcs_path,
+            final_audio_gcs_path: randomGeneration.final_audio_gcs_path,
+        };
+
+        return res.status(200).json(randomReponse);
     }
 
     const currentCount = await getTodayGenerationsCount();
@@ -90,6 +116,7 @@ generationsRouter.post("/", async (req: Request, res: Response) => {
 
     // ok to generate
     const generationOutput = await sendGeneration(data);
+
     if (!generationOutput) {
         return res.status(500).json({
             message: "Something went wrong, failed generation request.",

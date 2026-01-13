@@ -8,6 +8,7 @@ const configs = {
     generationEndpoint: process.env.GENERATION_ENDPOINT || "",
     agentAppName: process.env.GENERATION_AGENT_APP_NAME || "",
     generationUserId: "api",
+    mockGeneration: process.env.MOCK_GENERATION || false,
 };
 
 console.log("Configs:", configs);
