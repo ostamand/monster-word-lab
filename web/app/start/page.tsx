@@ -27,7 +27,7 @@ export default function StartPage() {
             {/* Background */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/common/background.jpeg"
+                    src="/common/background-up.webp"
                     alt="Monster Word Lab Star Background"
                     fill
                     className="object-cover object-left-bottom"
@@ -39,7 +39,7 @@ export default function StartPage() {
             {/* Foreground */}
             <div className="absolute inset-0 z-10 overflow-hidden rounded-none border-0 shadow-none sm:inset-6 sm:rounded-[2rem] md:rounded-[2.5rem] md:border-4 md:border-white/10 md:shadow-2xl md:inset-8 pointer-events-none">
                 <Image
-                    src="/start/foreground.jpeg"
+                    src="/start/foreground-up.webp"
                     alt="Monster Word Lab Start Foreground"
                     fill
                     className="object-cover object-left"

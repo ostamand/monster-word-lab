@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { useSessionContext } from "@/contexts/session.contexts";
 import { GenerationInput, sendGeneration } from "@/lib/generations";
+import Modal from "@/components/Modal";
 
 const LOADING_MESSAGES = [
     "Mixing slimy ingredients...",
@@ -20,6 +21,7 @@ const LOADING_MESSAGES = [
 
 export default function GeneratePage() {
     const router = useRouter();
+    const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
     const [messageIndex, setMessageIndex] = useState(0);
     const hasStartedGeneration = useRef(false);
 
@@ -60,11 +62,10 @@ export default function GeneratePage() {
                     router.replace(`/experiments/${generationData.id}`);
                 } else {
                     if (generationResponse.status === 429) {
-                        // TODO: better handling, too many generation for today
                         console.error(
                             "Maximum number of generation per day reached.",
                         );
-                        router.replace("/error");
+                        setIsLimitModalOpen(true);
                     } else {
                         router.replace("/error");
                     }
@@ -82,10 +83,27 @@ export default function GeneratePage() {
 
     return (
         <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
+            <Modal isOpen={isLimitModalOpen}>
+                <h2 className="text-2xl font-bold text-sky-400 mb-4">
+                    Daily Limit Reached
+                </h2>
+                <p className="text-white mb-6">
+                    We've reached our daily generation limit! The lab needs to
+                    recharge. Please come back tomorrow.
+                </p>
+                <div className="flex justify-center">
+                    <Link
+                        href="/explore"
+                        className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-full transition-colors pointer-events-auto"
+                    >
+                        Explore Experiments
+                    </Link>
+                </div>
+            </Modal>
             {/* Background Layer */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/common/background.jpeg"
+                    src="/common/background-up.webp"
                     alt="Monster Lab Background"
                     fill
                     className="object-cover"
@@ -97,7 +115,7 @@ export default function GeneratePage() {
             {/* Foreground Layer */}
             <div className="absolute inset-0 z-10 overflow-hidden rounded-none border-0 shadow-none sm:inset-6 sm:rounded-[2rem] md:rounded-[2.5rem] md:border-4 md:border-white/10 md:shadow-2xl md:inset-8">
                 <Image
-                    src="/generate/foreground.jpeg"
+                    src="/generate/foreground-up.webp"
                     alt="Monster Lab Scene"
                     fill
                     className="object-cover object-right"

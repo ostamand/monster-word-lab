@@ -17,7 +17,7 @@ export default function ErrorPage() {
             {/* Background */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/common/background.jpeg"
+                    src="/common/background-up.webp"
                     alt="Background"
                     fill
                     className="object-cover object-left-bottom"

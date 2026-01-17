@@ -70,7 +70,7 @@ export default function ExperimentPage() {
             {/* Background */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/common/background.jpeg"
+                    src="/common/background-up.webp"
                     alt="Experiment Background"
                     fill
                     className="object-cover object-left-bottom"
@@ -82,7 +82,7 @@ export default function ExperimentPage() {
             {/* Foreground */}
             <div className="absolute inset-0 z-10 overflow-hidden rounded-none border-0 shadow-none sm:inset-6 sm:rounded-[2rem] md:rounded-[2.5rem] md:border-4 md:border-white/10 md:shadow-2xl md:inset-8 pointer-events-none">
                 <Image
-                    src="/experiment/foreground.jpeg"
+                    src="/experiment/foreground-up.webp"
                     alt="Experiment Foreground"
                     fill
                     className="object-cover object-right"

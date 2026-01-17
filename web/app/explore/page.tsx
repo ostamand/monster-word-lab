@@ -44,7 +44,7 @@ export default function ExplorePage() {
             {/* Background */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/common/background.jpeg"
+                    src="/common/background-up.webp"
                     alt="Monster Word Lab Explore Background"
                     fill
                     className="object-cover object-left-bottom"
@@ -56,7 +56,7 @@ export default function ExplorePage() {
             {/* Foreground */}
             <div className="absolute inset-0 z-10 overflow-hidden rounded-none border-0 shadow-none sm:inset-6 sm:rounded-[2rem] md:rounded-[2.5rem] md:border-4 md:border-white/10 md:shadow-2xl md:inset-8 pointer-events-none">
                 <Image
-                    src="/explore/foreground.jpeg"
+                    src="/explore/foreground-up.webp"
                     alt="Monster Word Lab Explore Foreground"
                     fill
                     className="object-cover object-center"
@@ -111,23 +111,23 @@ export default function ExplorePage() {
 
             {/* Error Overlay */}
             <Modal isOpen={showError}>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                <h2 className="text-2xl font-bold text-sky-400 mb-4">
                     No Discoveries Found
                 </h2>
-                <p className="text-slate-300 mb-8 text-lg">
+                <p className="text-white mb-6">
                     We couldn&apos;t find any existing experiments for this
                     language and age group.
                 </p>
                 <div className="flex flex-col gap-4">
                     <button
                         onClick={() => router.push("/start")}
-                        className="w-full py-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+                        className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-full transition-colors pointer-events-auto shadow-lg"
                     >
                         Create New Experiment
                     </button>
                     <button
                         onClick={() => setShowError(false)}
-                        className="w-full py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all border border-white/20"
+                        className="border-2 border-sky-500 text-sky-400 hover:bg-sky-500/10 font-bold py-2 px-4 rounded-full transition-colors pointer-events-auto"
                     >
                         Try Different Settings
                     </button>
