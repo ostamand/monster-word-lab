@@ -15,6 +15,10 @@ export async function signGenerationOutput(
     const signFile = async (gcsUri: string | undefined) => {
         if (!gcsUri) return undefined;
 
+        if (gcsUri.startsWith("http://") || gcsUri.startsWith("https://")) {
+            return gcsUri;
+        }
+
         try {
             // Regex to extract bucket and file path from "gs://bucket-name/path/to/file.ext"
             const match = gcsUri.match(/^gs:\/\/([^\/]+)\/(.+)$/);

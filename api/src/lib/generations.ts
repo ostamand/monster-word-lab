@@ -38,8 +38,6 @@ export async function sendGeneration(request: GenerationInput) {
             );
         }
 
-        console.log("Session:", sessionResponse.data);
-
         const payload: RunPayload = {
             app_name: configs.agentAppName,
             user_id: configs.generationUserId,
@@ -73,8 +71,6 @@ export async function sendGeneration(request: GenerationInput) {
             final_image_gcs_path: string;
             final_audio_gcs_path: string;
         };
-
-        console.log("Assets generated successfully:", data);
 
         return answer;
     } catch (error) {

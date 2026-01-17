@@ -27,7 +27,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
             </div>
 
-            <main className="relative z-30 flex min-h-screen flex-col items-center justify-between pb-8 pt-12 sm:pb-12 sm:pt-20 md:pb-16 md:pt-32 pointer-events-none">
+            <main className="relative z-30 flex min-h-screen flex-col items-center justify-between pb-8 pt-6 sm:pb-12 sm:pt-10 md:pb-16 md:pt-16 pointer-events-none">
                 <div
                     className="animate-fade-in-down opacity-0 pointer-events-auto"
                     style={{ animationDelay: "0ms" }}

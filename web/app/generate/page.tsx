@@ -1,14 +1,26 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 import { useSessionContext } from "@/contexts/session.contexts";
 import { GenerationInput, sendGeneration } from "@/lib/generations";
-import LoadingAnimation from "@/components/LoadingAnimation";
+
+const LOADING_MESSAGES = [
+    "Mixing slimy ingredients...",
+    "Calibrating the monster-meter...",
+    "Feeding the word-bugs...",
+    "Polishing the laboratory flasks...",
+    "Consulting the ancient scrolls...",
+    "Waking up the hamsters...",
+    "Untangling the plot lines...",
+];
 
 export default function GeneratePage() {
-    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+    const [messageIndex, setMessageIndex] = useState(0);
 
     const {
         state,
@@ -21,36 +33,135 @@ export default function GeneratePage() {
     if (state === "waiting" || !language) redirect("/");
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
         const data: GenerationInput = {
             age,
             language,
             theme,
             targetWord,
         };
+
+        let isMounted = true;
+
         async function doGeneration() {
-            const generationResponse = await sendGeneration(data);
-            if (generationResponse.success) {
-                const { data: generationData } = generationResponse;
-                redirect(`/experiments/${generationData.id}`);
-            } else {
-                redirect("/error");
+            try {
+                const generationResponse = await sendGeneration(data);
+
+                if (!isMounted) return;
+
+                if (generationResponse.success) {
+                    const { data: generationData } = generationResponse;
+                    router.replace(`/experiments/${generationData.id}`);
+                } else {
+                    if (generationResponse.status === 429) {
+                        // TODO: better handling, too many generation for today
+                        console.error(
+                            "Maximum number of generation per day reached.",
+                        );
+                        router.replace("/error");
+                    } else {
+                        router.replace("/error");
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                if (isMounted) router.replace("/error");
             }
         }
-        doGeneration();
+
+        if (process.env.NEXT_PUBLIC_DO_GENERATION === "TRUE") {
+            doGeneration();
+        }
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
-    if (loading) {
-        return (
-            <LoadingAnimation
-                message="Generating New Experiment..."
-                className="pointer-events-auto"
-            />
-        );
-    }
-
     return (
-        <>
-            Generate
-        </>
+        <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
+            {/* Background Layer */}
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src="/generate/background.jpeg"
+                    alt="Monster Lab Background"
+                    fill
+                    className="object-cover"
+                    priority
+                    quality={90}
+                />
+            </div>
+
+            {/* Foreground Layer */}
+            <div className="absolute inset-4 z-10 overflow-hidden rounded-[2.5rem] border-4 border-white/10 shadow-2xl sm:inset-6 md:inset-8">
+                <Image
+                    src="/generate/foreground.jpeg"
+                    alt="Monster Lab Scene"
+                    fill
+                    className="object-cover object-bottom"
+                    priority
+                    quality={100}
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
+            </div>
+
+            {/* Content Layer */}
+            <main className="relative z-30 flex min-h-screen flex-col items-center pb-8 pt-6 sm:pb-12 sm:pt-10 md:pb-16 md:pt-16 pointer-events-none">
+                {/* Title */}
+                <div className="animate-fade-in-down pointer-events-auto">
+                    <Image
+                        src="/generate/title.png"
+                        alt="Monster Word Lab"
+                        width={800}
+                        height={400}
+                        className="w-[350px] md:w-[600px] lg:w-[800px] h-auto drop-shadow-2xl transition-transform hover-wobble-custom"
+                        priority
+                    />
+                </div>
+
+                {/* Left-aligned Content Container */}
+                <div className="flex flex-grow w-full items-center justify-start pl-4 sm:pl-12 md:pl-24">
+                    <div className="flex flex-col items-center">
+                        {/* Loading Container */}
+                        <div className="relative animate-bounce-slow">
+                            <Image
+                                src="/generate/loading.png"
+                                alt="Loading..."
+                                width={600}
+                                height={200}
+                                className="w-[300px] sm:w-[450px] md:w-[600px] h-auto drop-shadow-2xl"
+                                priority
+                            />
+
+                            {/* Text Overlay - Positioned relative to the loading image */}
+                            <div className="absolute inset-0 flex items-center justify-center pt-16 sm:pt-24 md:pt-32">
+                                <p className="w-[80%] text-center text-sm sm:text-lg md:text-xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] animate-pulse">
+                                    {LOADING_MESSAGES[messageIndex]}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Cancel Button */}
+                        <div className="mt-8 pointer-events-auto transition-transform hover:scale-105 active:scale-95">
+                            <Link href="/">
+                                <Image
+                                    src="/generate/cancel.png"
+                                    alt="Cancel Generation"
+                                    width={400}
+                                    height={120}
+                                    className="w-[200px] sm:w-[280px] md:w-[350px] h-auto drop-shadow-xl hover:drop-shadow-2xl transition-all"
+                                />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { redirect, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useSessionContext } from "@/contexts/session.contexts";
@@ -9,6 +9,7 @@ import LoadingAnimation from "@/components/LoadingAnimation";
 
 export default function ExperimentPage() {
     const params = useParams();
+    const router = useRouter();
     const { id } = params;
 
     const [loading, setLoading] = useState(true);
@@ -59,7 +60,7 @@ export default function ExperimentPage() {
         await getNextGeneration();
         if (state !== "running") {
             // should redirect to done, for now clear session and redirect to home.
-            redirect("/");
+            router.push("/");
         }
         setLoading(false);
     }
@@ -100,7 +101,7 @@ export default function ExperimentPage() {
                         <a
                             onClick={() => {
                                 clearSession();
-                                redirect("/");
+                                router.push("/");
                             }}
                             className="cursor-pointer"
                         >
