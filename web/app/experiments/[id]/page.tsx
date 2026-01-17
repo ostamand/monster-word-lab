@@ -13,8 +13,14 @@ export default function ExperimentPage() {
 
     const [loading, setLoading] = useState(true);
 
-    const { state, startSession, getNextGeneration, getGenerationFromId, clearSession, generation } =
-        useSessionContext();
+    const {
+        state,
+        startSession,
+        getNextGeneration,
+        getGenerationFromId,
+        clearSession,
+        generation,
+    } = useSessionContext();
 
     useEffect(() => {
         async function fetchGeneration() {
@@ -24,7 +30,10 @@ export default function ExperimentPage() {
                     const generationOutput = await getGenerationFromId(id);
                     // check if session is already started or not.
                     if (generationOutput && state !== "running") {
-                        startSession(generationOutput.userInput.language, generationOutput.userInput.age);
+                        startSession(
+                            generationOutput.userInput.language,
+                            generationOutput.userInput.age,
+                        );
                     }
                 }
             } catch (error) {
@@ -83,9 +92,9 @@ export default function ExperimentPage() {
             </div>
 
             {/* Main Layout (z-20) */}
-            <div className="relative z-20 flex h-full flex-col pointer-events-none">
+            <div className="relative z-20 h-full w-full pointer-events-none">
                 {/* Header: Home & Speech Buttons */}
-                <header className="flex w-full items-start justify-between p-6 md:p-10 shrink-0 z-40">
+                <header className="absolute top-0 left-0 right-0 flex items-start justify-between p-8 md:p-14 z-40">
                     {/* Home Button - Top Left */}
                     <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
                         <a
@@ -100,7 +109,7 @@ export default function ExperimentPage() {
                                 alt="Home"
                                 width={200}
                                 height={70}
-                                className="h-16 w-auto md:h-20 drop-shadow-lg"
+                                className="h-14 w-auto md:h-18 drop-shadow-lg"
                             />
                         </a>
                     </div>
@@ -121,14 +130,14 @@ export default function ExperimentPage() {
                                 alt="Speak"
                                 width={80}
                                 height={80}
-                                className="w-16 h-16 md:w-20 md:h-20 drop-shadow-lg"
+                                className="w-14 h-14 md:w-18 md:h-18 drop-shadow-lg"
                             />
                         </button>
                     </div>
                 </header>
 
                 {/* Main Content Area */}
-                <main className="flex flex-1 items-center justify-center min-h-0 w-full p-6 md:p-10 pointer-events-none z-30">
+                <main className="absolute inset-0 flex items-center justify-center p-4 md:p-8 pointer-events-none z-30">
                     {loading
                         ? (
                             <LoadingAnimation
@@ -147,11 +156,11 @@ export default function ExperimentPage() {
                                             alt={generation.userInput
                                                 .targetWord ||
                                                 "Experiment Generation"}
-                                            className="w-auto h-auto max-w-full max-h-full object-contain rounded-3xl border-4 border-sky-400 shadow-[0_0_40px_rgba(56,189,248,0.7)] bg-black/50 pointer-events-auto"
+                                            className="w-auto h-auto max-w-[90%] max-h-[75%] md:max-h-[85%] object-contain rounded-3xl border-4 border-sky-400 shadow-[0_0_60px_rgba(56,189,248,0.8)] bg-black/50 pointer-events-auto transition-all duration-500"
                                         />
                                     )
                                     : (
-                                        <div className="flex items-center justify-center w-full h-full max-w-2xl max-h-[500px] bg-black/50 rounded-lg border-2 border-white/20 backdrop-blur-sm pointer-events-auto">
+                                        <div className="flex items-center justify-center w-full h-full max-w-4xl max-h-[80vh] bg-black/50 rounded-lg border-2 border-white/20 backdrop-blur-sm pointer-events-auto">
                                             <div className="text-white/50 p-8 text-center">
                                                 <span className="text-xl">
                                                     Experiment {id}{" "}
@@ -165,7 +174,7 @@ export default function ExperimentPage() {
                 </main>
 
                 {/* Footer: Next Button */}
-                <footer className="flex w-full items-end justify-end p-6 md:p-10 shrink-0 z-40">
+                <footer className="absolute bottom-0 left-0 right-0 flex items-end justify-end p-8 md:p-14 z-40">
                     {/* Next Button - Bottom Right */}
                     <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
                         <button onClick={handleNext}>
@@ -174,7 +183,7 @@ export default function ExperimentPage() {
                                 alt="Next Experiment"
                                 width={200}
                                 height={70}
-                                className="h-16 w-auto md:h-24 drop-shadow-lg"
+                                className="h-14 w-auto md:h-20 drop-shadow-lg"
                             />
                         </button>
                     </div>
