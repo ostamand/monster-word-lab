@@ -121,9 +121,6 @@ export async function getRandomGeneration(
             baseQuery = baseQuery.where("userInput.age", "==", filters.age);
         }
 
-        // Generate a random ID to use as a cursor
-        const randomKey = collectionRef.doc().id;
-
         // Helper to process snapshot
         const findValidDoc = (snapshot: FirebaseFirestore.QuerySnapshot) => {
             for (const doc of snapshot.docs) {
@@ -134,24 +131,57 @@ export async function getRandomGeneration(
             return null;
         };
 
-        // 1. Try finding a doc greater than or equal to the random key
-        // We fetch a small batch (limit 5) to increase odds of finding a non-excluded doc
-        const snapshotHigh = await baseQuery
-            .where(FieldPath.documentId(), ">=", randomKey)
-            .limit(5)
-            .get();
+        const MAX_RETRIES = 5;
+        let attempts = 0;
 
-        let validDoc = findValidDoc(snapshotHigh);
-        if (validDoc) return await signGenerationOutput(validDoc);
+        // 1. Hybrid Strategy - Phase A: Random Sampling
+        // Efficient for low-to-medium saturation (e.g. < 80% excluded)
+        while (attempts < MAX_RETRIES) {
+            const randomKey = collectionRef.doc().id;
 
-        // 2. If no valid doc found (or end of collection), wrap around and search lower
-        const snapshotLow = await baseQuery
-            .where(FieldPath.documentId(), "<", randomKey)
-            .limit(5)
-            .get();
+            const snapshotHigh = await baseQuery
+                .where(FieldPath.documentId(), ">=", randomKey)
+                .limit(20)
+                .get();
 
-        validDoc = findValidDoc(snapshotLow);
-        if (validDoc) return await signGenerationOutput(validDoc);
+            let validDoc = findValidDoc(snapshotHigh);
+            if (validDoc) return await signGenerationOutput(validDoc);
+
+            const snapshotLow = await baseQuery
+                .where(FieldPath.documentId(), "<", randomKey)
+                .limit(20)
+                .get();
+
+            validDoc = findValidDoc(snapshotLow);
+            if (validDoc) return await signGenerationOutput(validDoc);
+
+            attempts++;
+        }
+
+        // 2. Hybrid Strategy - Phase B: Fallback Batch Scan
+        // If we reach here, the space is likely highly saturated (e.g. > 90% excluded).
+        // We fetch a larger batch of candidates and filter in memory to find the needle in the haystack.
+        console.warn(
+            "Random sampling failed (high saturation?), switching to fallback scan.",
+        );
+
+        const fallbackSnapshot = await baseQuery.limit(1000).get();
+        const validDocs: GenerationOutput[] = [];
+
+        for (const doc of fallbackSnapshot.docs) {
+            if (!excludeIds.includes(doc.id)) {
+                validDocs.push({ ...doc.data(), id: doc.id } as GenerationOutput);
+            }
+        }
+
+        if (validDocs.length > 0) {
+            // Pick a random one from the remaining valid docs
+            const randomIndex = Math.floor(Math.random() * validDocs.length);
+            const selectedDoc = validDocs[randomIndex];
+            if (selectedDoc) {
+                return await signGenerationOutput(selectedDoc);
+            }
+        }
 
         return null;
     } catch (error) {
