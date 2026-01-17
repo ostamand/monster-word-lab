@@ -82,13 +82,13 @@ export default function GeneratePage() {
     }, []);
 
     return (
-        <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
+        <div className="relative h-full w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
             <Modal isOpen={isLimitModalOpen}>
                 <h2 className="text-2xl font-bold text-sky-400 mb-4">
                     Daily Limit Reached
                 </h2>
                 <p className="text-white mb-6">
-                    We've reached our daily generation limit! The lab needs to
+                    We&apos;ve reached our daily generation limit! The lab needs to
                     recharge. Please come back tomorrow.
                 </p>
                 <div className="flex justify-center">
@@ -126,7 +126,7 @@ export default function GeneratePage() {
             </div>
 
             {/* Content Layer */}
-            <main className="relative z-30 flex min-h-screen flex-col items-center pb-8 pt-6 sm:pb-12 sm:pt-10 md:pb-16 md:pt-16 pointer-events-none">
+            <main className="relative z-30 flex h-full flex-col items-center pb-8 pt-6 sm:pb-12 sm:pt-10 md:pb-16 md:pt-16 pointer-events-none">
                 {/* Title */}
                 <div className="animate-fade-in-down pointer-events-auto">
                     <Image

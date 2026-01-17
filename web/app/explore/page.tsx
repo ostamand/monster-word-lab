@@ -40,7 +40,7 @@ export default function ExplorePage() {
     };
 
     return (
-        <div className="relative h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
+        <div className="relative h-full w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
             {/* Background */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image

@@ -13,7 +13,7 @@ export default function ErrorPage() {
     };
 
     return (
-        <div className="relative h-screen w-full overflow-hidden bg-black font-sans">
+        <div className="relative h-full w-full overflow-hidden bg-black font-sans">
             {/* Background */}
             <div className="absolute inset-0 z-0">
                 <Image
