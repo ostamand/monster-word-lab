@@ -55,7 +55,7 @@ export default function Home() {
                             alt="Start Experiment"
                             width={350}
                             height={120}
-                            className="w-[260px] md:w-[320px] lg:w-[380px] h-auto drop-shadow-xl group-hover:drop-shadow-2xl transition-all"
+                            className="w-[220px] md:w-[280px] lg:w-[320px] h-auto drop-shadow-xl group-hover:drop-shadow-2xl transition-all"
                         />
                     </Link>
 
@@ -68,7 +68,7 @@ export default function Home() {
                             alt="Explore Experiments"
                             width={350}
                             height={120}
-                            className="w-[260px] md:w-[320px] lg:w-[380px] h-auto drop-shadow-xl group-hover:drop-shadow-2xl transition-all"
+                            className="w-[220px] md:w-[280px] lg:w-[320px] h-auto drop-shadow-xl group-hover:drop-shadow-2xl transition-all"
                         />
                     </Link>
                 </div>
