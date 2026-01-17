@@ -55,9 +55,9 @@ export default function StartPage() {
             </div>
 
             {/* Main Layout (z-20) */}
-            <div className="relative z-20 flex h-full flex-col p-4 md:p-6 pointer-events-none">
+            <div className="relative z-20 flex h-full flex-col pointer-events-none">
                 {/* Header: Home Button */}
-                <header className="absolute top-10 left-10 z-40 md:top-16 md:left-16">
+                <header className="flex w-full items-start justify-start p-6 md:p-10 shrink-0 z-40">
                     {/* Home Button - Top Left */}
                     <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
                         <a
@@ -79,7 +79,7 @@ export default function StartPage() {
                 </header>
 
                 {/* Content: Panel on the Right */}
-                <main className="flex flex-1 items-center justify-end w-full min-h-0 pr-4 md:pr-12">
+                <main className="flex flex-1 items-center justify-end w-full min-h-0 p-6 md:p-10">
                     {/* Panel for Content */}
                     <div
                         className="flex flex-col items-center gap-6 p-8 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl max-w-md w-full animate-fade-in-up opacity-0 pointer-events-auto max-h-full overflow-y-auto"

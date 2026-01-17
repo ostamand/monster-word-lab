@@ -61,34 +61,35 @@ export default function ExperimentPage() {
 
     return (
         <div className="relative h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
-            {/* Background Layer (z-0) */}
+            {/* Background */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/experiment/background.jpeg"
+                    src="/start/background.jpeg"
                     alt="Experiment Background"
                     fill
-                    className="object-cover"
+                    className="object-cover object-left-bottom"
                     priority
                     quality={90}
                 />
             </div>
 
-            {/* Foreground Layer (z-10) */}
-            <div className="absolute inset-0 z-10 pointer-events-none">
+            {/* Foreground */}
+            <div className="absolute inset-4 z-10 overflow-hidden rounded-[2.5rem] border-4 border-white/10 shadow-2xl sm:inset-6 md:inset-8 pointer-events-none">
                 <Image
                     src="/experiment/foreground.jpeg"
                     alt="Experiment Foreground"
                     fill
-                    className="object-cover"
+                    className="object-cover object-left-bottom"
                     priority
                     quality={100}
                 />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
             </div>
 
             {/* Main Layout (z-20) */}
-            <div className="relative z-20 flex h-full flex-col justify-between p-4 md:p-6">
-                {/* Header: Home & Speech */}
-                <header className="flex w-full items-start justify-between pointer-events-none shrink-0 z-40">
+            <div className="relative z-20 flex h-full flex-col pointer-events-none">
+                {/* Header: Home & Speech Buttons */}
+                <header className="flex w-full items-start justify-between p-6 md:p-10 shrink-0 z-40">
                     {/* Home Button - Top Left */}
                     <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
                         <a
@@ -96,6 +97,7 @@ export default function ExperimentPage() {
                                 clearSession();
                                 redirect("/");
                             }}
+                            className="cursor-pointer"
                         >
                             <Image
                                 src="/experiment/home.png"
@@ -130,7 +132,7 @@ export default function ExperimentPage() {
                 </header>
 
                 {/* Main Content Area */}
-                <main className="flex flex-1 items-center justify-center min-h-0 w-full p-4 pointer-events-none z-30">
+                <main className="flex flex-1 items-center justify-center min-h-0 w-full p-6 md:p-10 pointer-events-none z-30">
                     {loading
                         ? (
                             <LoadingAnimation
@@ -167,7 +169,7 @@ export default function ExperimentPage() {
                 </main>
 
                 {/* Footer: Next Button */}
-                <footer className="flex w-full items-end justify-end pointer-events-none shrink-0 z-40">
+                <footer className="flex w-full items-end justify-end p-6 md:p-10 shrink-0 z-40">
                     {/* Next Button - Bottom Right */}
                     <div className="pointer-events-auto transition-transform hover:scale-105 active:scale-95">
                         <button onClick={handleNext}>
