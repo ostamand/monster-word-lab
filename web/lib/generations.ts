@@ -88,10 +88,11 @@ export async function getRandomGeneration(
             },
             body: JSON.stringify(body),
         });
+        const data = await response.json() as GenerationOutput;
         if (!response.ok) {
+            console.error(data);
             return null;
         }
-        const data = await response.json() as GenerationOutput;
         return data;
     } catch (error) {
         console.error("Error while trying to get random generation:", error);

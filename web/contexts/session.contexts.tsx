@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 import { GenerationOutput, PossibleLanguages } from "@/lib/generations";
-import { getRandomGeneration, getGenerationById } from "@/lib/generations";
+import { getGenerationById, getRandomGeneration } from "@/lib/generations";
 
 type SessionState = "waiting" | "running" | "done";
 
@@ -20,12 +20,17 @@ type SessionContextType = {
         theme?: string | null,
         targetWord?: string | null,
     ) => void;
-    getNextGeneration: (successful?: boolean) => Promise<GenerationOutput | null>;
+    getNextGeneration: (
+        successful?: boolean,
+    ) => Promise<GenerationOutput | null>;
     getGenerationFromId: (id: string) => Promise<GenerationOutput | null>;
     clearSession: () => void;
 };
 
-type SessionHistory = {generation: GenerationOutput; successful: boolean | undefined}
+type SessionHistory = {
+    generation: GenerationOutput;
+    successful: boolean | undefined;
+};
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
@@ -48,14 +53,20 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
 
     const getNextGeneration = async (successful?: boolean) => {
-        if(state !== "running") return null;
+        if (state !== "running") return null;
 
         // successful = was the last generation succesful or not?
-        if(generation) {
-            setHistory([...history, {generation, successful}]);
+
+        let updatedHistory = history;
+
+        if (generation) {
+            if (!history.find((h) => h.generation.id === generation.id)) {
+                updatedHistory = [...history, { generation, successful }];
+                setHistory(updatedHistory);
+            }
         }
 
-        const completedIds = history.map((h) => h.generation.id);
+        const completedIds = updatedHistory.map((h) => h.generation.id);
 
         const nextGeneration = await getRandomGeneration(
             language || "en", // will always be defined anyway
@@ -64,11 +75,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         );
 
         if (!nextGeneration) {
+            console.log("we are done");
             // we are done
             setState("done");
             setGeneration(null);
             return null;
         }
+
+        console.log(nextGeneration);
 
         setGeneration(nextGeneration);
 
@@ -77,9 +91,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
     const getGenerationFromId = async (id: string) => {
         const generationOutput = await getGenerationById(id);
-        setGeneration(generationOutput)
+        setGeneration(generationOutput);
         return generationOutput;
-    }
+    };
 
     const startSession = (
         language: PossibleLanguages,

@@ -57,12 +57,12 @@ export default function ExperimentPage() {
 
     async function handleNext() {
         setLoading(true);
-        await getNextGeneration();
-        if (state !== "running") {
-            // should redirect to done, for now clear session and redirect to home.
+        const generation = await getNextGeneration();
+        if (!generation) {
             router.push("/");
+        } else {
+            setLoading(false);
         }
-        setLoading(false);
     }
 
     return (

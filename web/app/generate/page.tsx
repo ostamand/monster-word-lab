@@ -57,6 +57,7 @@ export default function GeneratePage() {
 
                 if (generationResponse.success) {
                     const { data: generationData } = generationResponse;
+                    console.log(generationResponse);
                     router.replace(`/experiments/${generationData.id}`);
                 } else {
                     if (generationResponse.status === 429) {
