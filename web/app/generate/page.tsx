@@ -29,13 +29,12 @@ export default function GeneratePage() {
         };
         async function doGeneration() {
             const generationResponse = await sendGeneration(data);
-            // TODO remove
-            setTimeout(() => {
-                if(generationResponse.success) {
-                    const {data: generationData} = generationResponse;
-                    redirect(`/experiments/${generationData.id}`);
-                }
-            }, 5000);
+            if (generationResponse.success) {
+                const { data: generationData } = generationResponse;
+                redirect(`/experiments/${generationData.id}`);
+            } else {
+                redirect("/error");
+            }
         }
         doGeneration();
     }, []);
