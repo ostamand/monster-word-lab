@@ -51,17 +51,12 @@ export default function GeneratePage() {
             targetWord,
         };
 
-        let isMounted = true;
-
         async function doGeneration() {
             try {
+                console.log("Starting generation", data);
                 const generationResponse = await sendGeneration(data);
-
-                if (!isMounted) return;
-
                 if (generationResponse.success) {
                     const { data: generationData } = generationResponse;
-                    console.log(generationResponse);
                     router.replace(`/experiments/${generationData.id}`);
                 } else {
                     if (generationResponse.status === 429) {
@@ -76,17 +71,13 @@ export default function GeneratePage() {
                 }
             } catch (error) {
                 console.error(error);
-                if (isMounted) router.replace("/error");
+                router.replace("/error");
             }
         }
 
         if (process.env.NEXT_PUBLIC_DO_GENERATION === "TRUE") {
             doGeneration();
         }
-
-        return () => {
-            isMounted = false;
-        };
     }, []);
 
     return (
