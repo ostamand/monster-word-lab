@@ -1,7 +1,7 @@
 "use client";
 
 import { redirect, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -21,6 +21,7 @@ const LOADING_MESSAGES = [
 export default function GeneratePage() {
     const router = useRouter();
     const [messageIndex, setMessageIndex] = useState(0);
+    const hasStartedGeneration = useRef(false);
 
     const {
         state,
@@ -40,6 +41,9 @@ export default function GeneratePage() {
     }, []);
 
     useEffect(() => {
+        if (hasStartedGeneration.current) return;
+        hasStartedGeneration.current = true;
+
         const data: GenerationInput = {
             age,
             language,
