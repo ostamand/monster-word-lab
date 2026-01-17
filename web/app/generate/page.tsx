@@ -83,7 +83,7 @@ export default function GeneratePage() {
     return (
         <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
             {/* Background Layer */}
-            <div className="absolute inset-0 z-0">
+            <div className="hidden md:block absolute inset-0 z-0">
                 <Image
                     src="/generate/background.jpeg"
                     alt="Monster Lab Background"
@@ -95,12 +95,12 @@ export default function GeneratePage() {
             </div>
 
             {/* Foreground Layer */}
-            <div className="absolute inset-4 z-10 overflow-hidden rounded-[2.5rem] border-4 border-white/10 shadow-2xl sm:inset-6 md:inset-8">
+            <div className="absolute inset-0 z-10 overflow-hidden rounded-none border-0 shadow-none sm:inset-6 sm:rounded-[2rem] md:rounded-[2.5rem] md:border-4 md:border-white/10 md:shadow-2xl md:inset-8">
                 <Image
                     src="/generate/foreground.jpeg"
                     alt="Monster Lab Scene"
                     fill
-                    className="object-cover object-bottom"
+                    className="object-cover object-right"
                     priority
                     quality={100}
                 />

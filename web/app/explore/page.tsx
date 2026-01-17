@@ -42,7 +42,7 @@ export default function ExplorePage() {
     return (
         <div className="relative h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
             {/* Background */}
-            <div className="absolute inset-0 z-0">
+            <div className="hidden md:block absolute inset-0 z-0">
                 <Image
                     src="/explore/background.jpeg"
                     alt="Monster Word Lab Explore Background"
@@ -54,7 +54,7 @@ export default function ExplorePage() {
             </div>
 
             {/* Foreground */}
-            <div className="absolute inset-4 z-10 overflow-hidden rounded-[2.5rem] border-4 border-white/10 shadow-2xl sm:inset-6 md:inset-8 pointer-events-none">
+            <div className="absolute inset-0 z-10 overflow-hidden rounded-none border-0 shadow-none sm:inset-6 sm:rounded-[2rem] md:rounded-[2.5rem] md:border-4 md:border-white/10 md:shadow-2xl md:inset-8 pointer-events-none">
                 <Image
                     src="/explore/foreground.jpeg"
                     alt="Monster Word Lab Explore Foreground"
