@@ -33,7 +33,7 @@ type GenerationResponse = {
 
 export async function sendGeneration(
     data: GenerationInput,
-): Promise<GenerationResponse | null> {
+): Promise<{ success: true; data: GenerationResponse } | { success: false; error: string; status: number }> {
     try {
         const response = await fetch(`${configs.apiEndpoint}/generations`, {
             method: "POST",
@@ -43,21 +43,20 @@ export async function sendGeneration(
             body: JSON.stringify(data),
         });
 
-        if (!response.ok) {
-            // Log the error status if the server responds with an error
-            const errorText = await response.text();
-            console.error(
-                `Generation request failed: ${response.status} - ${errorText}`,
-            );
-            return null;
+        if (response.ok) {
+            const result = await response.json() as GenerationResponse;
+            return { success: true, data: result };
         }
 
-        const result = await response.json() as GenerationResponse;
-
-        return result;
+        const errorBody = await response.json().catch(() => ({ message: "Unknown error" }));
+        return { 
+            success: false, 
+            status: response.status, 
+            error: errorBody.message || response.statusText 
+        };
     } catch (error) {
         console.error("Error while trying to send generation request:", error);
-        return null;
+        return { success: false, status: 0, error: "Network error" };
     }
 }
 
@@ -67,19 +66,19 @@ export async function getRandomGeneration(
     excludeIds?: string[],
 ): Promise<GenerationOutput | null> {
     try {
-        let url =
-            `${configs.apiEndpoint}/generations/random?language=${language}`;
-        if (age) {
-            url += `&age=${age}`;
-        }
-        if (excludeIds && excludeIds.length > 0) {
-            let excludedString = excludeIds.reduce((agg, value) => {
-                return agg + `,${value}`;
-            }, "");
-            excludedString = excludedString.slice(1);
-            url += `&excludeIds=${excludedString}`;
-        }
-        const response = await fetch(url);
+        const url = `${configs.apiEndpoint}/generations/random`;
+        const body = {
+            language,
+            age: age ?? undefined, 
+            excludeIds: excludeIds || [],
+        };
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
         if (!response.ok) {
             return null;
         }

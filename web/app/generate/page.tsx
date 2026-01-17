@@ -16,7 +16,6 @@ export default function GeneratePage() {
         theme,
         targetWord,
         age,
-        setComplete,
     } = useSessionContext();
 
     if (state === "waiting" || !language) redirect("/");
@@ -28,19 +27,16 @@ export default function GeneratePage() {
             theme,
             targetWord,
         };
-
         async function doGeneration() {
             const generationResponse = await sendGeneration(data);
-
             // TODO remove
             setTimeout(() => {
-                if (generationResponse) {
-                    setComplete(generationResponse.id);
-                    redirect(`/experiments/${generationResponse.id}`);
+                if(generationResponse.success) {
+                    const {data: generationData} = generationResponse;
+                    redirect(`/experiments/${generationData.id}`);
                 }
             }, 5000);
         }
-
         doGeneration();
     }, []);
 
