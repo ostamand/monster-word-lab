@@ -17,7 +17,7 @@ export default function ErrorPage() {
             {/* Background */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/start/background.jpeg"
+                    src="/common/background.jpeg"
                     alt="Background"
                     fill
                     className="object-cover object-left-bottom"
@@ -32,15 +32,16 @@ export default function ErrorPage() {
             {/* Content */}
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center p-4">
                 <div className="flex flex-col items-center gap-6 p-10 rounded-[2rem] bg-black/50 backdrop-blur-xl border border-white/10 shadow-2xl max-w-lg w-full animate-fade-in-up">
-                    
-                    {/* Icon or Image could go here, maybe a sad monster? 
+                    {
+                        /* Icon or Image could go here, maybe a sad monster?
                         For now, just text.
-                    */}
-                    
+                    */
+                    }
+
                     <h1 className="text-5xl font-bold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
                         Oops!
                     </h1>
-                    
+
                     <p className="text-xl text-white/90 font-medium leading-relaxed">
                         Something went wrong while creating your experiment.
                     </p>

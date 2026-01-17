@@ -44,7 +44,7 @@ export default function ExplorePage() {
             {/* Background */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/explore/background.jpeg"
+                    src="/common/background.jpeg"
                     alt="Monster Word Lab Explore Background"
                     fill
                     className="object-cover object-left-bottom"
@@ -101,7 +101,7 @@ export default function ExplorePage() {
                     />
                 </main>
             </div>
-            
+
             {/* Loading Overlay */}
             {isLoading && (
                 <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -111,9 +111,12 @@ export default function ExplorePage() {
 
             {/* Error Overlay */}
             <Modal isOpen={showError}>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">No Discoveries Found</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                    No Discoveries Found
+                </h2>
                 <p className="text-slate-300 mb-8 text-lg">
-                    We couldn&apos;t find any existing experiments for this language and age group.
+                    We couldn&apos;t find any existing experiments for this
+                    language and age group.
                 </p>
                 <div className="flex flex-col gap-4">
                     <button

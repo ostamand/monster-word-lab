@@ -85,7 +85,7 @@ export default function GeneratePage() {
             {/* Background Layer */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/generate/background.jpeg"
+                    src="/common/background.jpeg"
                     alt="Monster Lab Background"
                     fill
                     className="object-cover"

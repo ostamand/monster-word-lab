@@ -70,7 +70,7 @@ export default function ExperimentPage() {
             {/* Background */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/start/background.jpeg"
+                    src="/common/background.jpeg"
                     alt="Experiment Background"
                     fill
                     className="object-cover object-left-bottom"

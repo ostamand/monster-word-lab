@@ -27,7 +27,7 @@ export default function StartPage() {
             {/* Background */}
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/start/background.jpeg"
+                    src="/common/background.jpeg"
                     alt="Monster Word Lab Star Background"
                     fill
                     className="object-cover object-left-bottom"

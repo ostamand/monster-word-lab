@@ -6,7 +6,7 @@ export default function Home() {
         <div className="relative min-h-screen w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
             <div className="hidden md:block absolute inset-0 z-0">
                 <Image
-                    src="/landing/background.jpeg"
+                    src="/common/background.jpeg"
                     alt="Monster Word Lab Background Texture"
                     fill
                     className="object-cover"
