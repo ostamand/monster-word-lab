@@ -94,7 +94,8 @@ export default function StartPage() {
                                 {languages.map((lang) => (
                                     <button
                                         key={lang}
-                                        onClick={() => setSelectedLanguage(lang)}
+                                        onClick={() =>
+                                            setSelectedLanguage(lang)}
                                         className={`transition-transform hover:scale-110 active:scale-95 duration-200 ${
                                             selectedLanguage === lang
                                                 ? "scale-110 drop-shadow-[0_0_15px_rgba(167,139,250,0.8)]"

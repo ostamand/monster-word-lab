@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from "express";
-import {z} from "zod";
+import { z } from "zod";
 
 import {
     type GenerationInput,
@@ -14,9 +14,9 @@ import { signGenerationOutput } from "../lib/storage.js";
 const generationsRouter = express.Router();
 
 export const RandomGenerationSchema = z.object({
-  excludeIds: z.array(z.string()).default([]),
-  language: z.enum(["en", "es", "fr"]).optional(),
-  age: z.number().int().min(3).optional(), 
+    excludeIds: z.array(z.string()).default([]),
+    language: z.enum(["en", "es", "fr"]).optional(),
+    age: z.number().int().min(3).optional(),
 });
 
 generationsRouter.post("/random", async (req: Request, res: Response) => {
@@ -26,7 +26,7 @@ generationsRouter.post("/random", async (req: Request, res: Response) => {
             const errorTree = z.treeifyError(validation.error);
             return res.status(400).json({
                 message: "Invalid request data",
-                errors: errorTree, 
+                errors: errorTree,
             });
         }
 
@@ -74,7 +74,7 @@ generationsRouter.post("/", async (req: Request, res: Response) => {
     }
 
     // mock generation flow (mostly for dev). will return a random already existing generation
-    if (configs.mockGeneration) {
+    if (configs.mockGeneration === "TRUE") {
         const randomGeneration = await getRandomGeneration();
 
         if (!randomGeneration) {

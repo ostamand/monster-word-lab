@@ -33,7 +33,13 @@ type GenerationResponse = {
 
 export async function sendGeneration(
     data: GenerationInput,
-): Promise<{ success: true; data: GenerationResponse } | { success: false; error: string; status: number }> {
+): Promise<
+    { success: true; data: GenerationResponse } | {
+        success: false;
+        error: string;
+        status: number;
+    }
+> {
     try {
         const response = await fetch(`${configs.apiEndpoint}/generations`, {
             method: "POST",
@@ -48,11 +54,14 @@ export async function sendGeneration(
             return { success: true, data: result };
         }
 
-        const errorBody = await response.json().catch(() => ({ message: "Unknown error" }));
-        return { 
-            success: false, 
-            status: response.status, 
-            error: errorBody.message || response.statusText 
+        const errorBody = await response.json().catch(() => ({
+            message: "Unknown error",
+        }));
+
+        return {
+            success: false,
+            status: response.status,
+            error: errorBody.message || response.statusText,
         };
     } catch (error) {
         console.error("Error while trying to send generation request:", error);
@@ -69,7 +78,7 @@ export async function getRandomGeneration(
         const url = `${configs.apiEndpoint}/generations/random`;
         const body = {
             language,
-            age: age ?? undefined, 
+            age: age ?? undefined,
             excludeIds: excludeIds || [],
         };
         const response = await fetch(url, {
