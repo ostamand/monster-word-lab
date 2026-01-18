@@ -20,30 +20,26 @@ export default function CongratulationsVideo(
                     `/api/congratulations?language=${language}`,
                 );
                 if (!response.ok) {
-                    throw new Error("Failed to fetch video list");
+                    throw new Error("Failed to fetch video");
                 }
                 const data = await response.json();
-                const videos = data.videos;
 
-                if (videos && videos.length > 0) {
-                    const randomVideo = videos[Math.floor(
-                        Math.random() * videos.length,
-                    )];
-                    setVideoSrc(`/congratulations/${language}/${randomVideo}`);
+                if (data.url) {
+                    setVideoSrc(data.url);
                     // Trigger animation shortly after setting source
                     setTimeout(() => setIsVisible(true), 50);
                 } else {
-                    // If no videos, just finish immediately
+                    // If no URL returned, finish
                     onComplete();
                 }
             } catch (error) {
-                console.error("Error fetching congratulations videos:", error);
+                console.error("Error fetching congratulations video:", error);
                 onComplete();
             }
         }
 
         fetchVideos();
-    }, [onComplete]);
+    }, [onComplete, language]);
 
     if (!videoSrc) {
         return null; // Or a loading spinner

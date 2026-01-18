@@ -9,6 +9,8 @@ const configs = {
     agentAppName: process.env.GENERATION_AGENT_APP_NAME || "",
     generationUserId: "api",
     mockGeneration: process.env.MOCK_GENERATION || false,
+    assetsBucketName: process.env.ASSETS_BUCKET_NAME ||
+        "monster-word-lab-assets",
 };
 
 console.log("Configs:", configs);
