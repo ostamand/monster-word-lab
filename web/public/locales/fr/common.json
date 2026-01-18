@@ -13,5 +13,14 @@
   "no_discoveries_title": "Aucune découverte trouvée",
   "no_discoveries_message": "Nous n'avons trouvé aucun produit existant pour cette langue et ce groupe d'âge.",
   "create_new_experiment": "Créer une Nouvelle Expérience",
-  "try_different_settings": "Essayer d'autres paramètres"
+  "try_different_settings": "Essayer d'autres paramètres",
+  "loading_messages": [
+    "Mélange des ingrédients gluants...",
+    "Calibrage du monstre-mètre...",
+    "Nourrissage des mots-insectes...",
+    "Polissage des fioles de laboratoire...",
+    "Consultation des parchemins anciens...",
+    "Réveil des hamsters...",
+    "Démêlage des intrigues..."
+  ]
 }

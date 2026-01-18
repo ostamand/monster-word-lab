@@ -13,5 +13,14 @@
   "no_discoveries_title": "No se encontraron descubrimientos",
   "no_discoveries_message": "No pudimos encontrar experimentos existentes para este idioma y grupo de edad.",
   "create_new_experiment": "Crear Nuevo Experimento",
-  "try_different_settings": "Probar Configuraciones Diferentes"
+  "try_different_settings": "Probar Configuraciones Diferentes",
+  "loading_messages": [
+    "Mezclando ingredientes viscosos...",
+    "Calibrando el monstruómetro...",
+    "Alimentando a los bichos-palabra...",
+    "Puliendo los frascos de laboratorio...",
+    "Consultando los pergaminos antiguos...",
+    "Despertando a los hámsters...",
+    "Desenredando las líneas de la trama..."
+  ]
 }

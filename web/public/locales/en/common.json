@@ -13,5 +13,14 @@
   "no_discoveries_title": "No Discoveries Found",
   "no_discoveries_message": "We couldn't find any existing experiments for this language and age group.",
   "create_new_experiment": "Create New Experiment",
-  "try_different_settings": "Try Different Settings"
+  "try_different_settings": "Try Different Settings",
+  "loading_messages": [
+    "Mixing slimy ingredients...",
+    "Calibrating the monster-meter...",
+    "Feeding the word-bugs...",
+    "Polishing the laboratory flasks...",
+    "Consulting the ancient scrolls...",
+    "Waking up the hamsters...",
+    "Untangling the plot lines..."
+  ]
 }

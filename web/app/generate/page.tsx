@@ -4,22 +4,25 @@ import { redirect, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 import { useSessionContext } from "@/contexts/session.contexts";
 import { GenerationInput, sendGeneration } from "@/lib/generations";
 import Modal from "@/components/Modal";
 
-const LOADING_MESSAGES = [
-    "Mixing slimy ingredients...",
-    "Calibrating the monster-meter...",
-    "Feeding the word-bugs...",
-    "Polishing the laboratory flasks...",
-    "Consulting the ancient scrolls...",
-    "Waking up the hamsters...",
-    "Untangling the plot lines...",
-];
-
 export default function GeneratePage() {
+    const { t } = useTranslation();
+    const loadingMessagesRaw = t("loading_messages", { returnObjects: true });
+    const loadingMessages = Array.isArray(loadingMessagesRaw) ? loadingMessagesRaw as string[] : [
+        "Mixing slimy ingredients...",
+        "Calibrating the monster-meter...",
+        "Feeding the word-bugs...",
+        "Polishing the laboratory flasks...",
+        "Consulting the ancient scrolls...",
+        "Waking up the hamsters...",
+        "Untangling the plot lines...",
+    ];
+
     const router = useRouter();
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
     const [messageIndex, setMessageIndex] = useState(0);
@@ -37,10 +40,10 @@ export default function GeneratePage() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
+            setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
         }, 3000);
         return () => clearInterval(interval);
-    }, []);
+    }, [loadingMessages.length]);
 
     useEffect(() => {
         if (hasStartedGeneration.current) return;
@@ -161,7 +164,7 @@ export default function GeneratePage() {
                             {/* Text Overlay - Positioned relative to the loading image */}
                             <div className="absolute inset-0 flex items-center justify-center pt-16 sm:pt-24 md:pt-32">
                                 <p className="w-[80%] text-center text-sm sm:text-lg md:text-xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] animate-pulse">
-                                    {LOADING_MESSAGES[messageIndex]}
+                                    {loadingMessages[messageIndex]}
                                 </p>
                             </div>
                         </div>
