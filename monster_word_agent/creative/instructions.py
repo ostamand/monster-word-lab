@@ -44,7 +44,7 @@ Select a specific art style based on `userInput.age`. Do not default to the same
 **Step D: Enforce Composition (The "Nano Banana" Layout)**
 - Nano Banana follows semantic spatial instructions well.
 - **Mandatory Instruction:** You must append this exact phrasing to ensure the bottom is empty:
-  > "The composition is a wide-angle shot. The main subject is centered in the top two-thirds of the frame. The bottom 20% of the image is a clean, solid, uncluttered surface (like a floor, ground, or shadow) to allow for text overlay. Do not place any objects in the bottom third."
+  > "The composition is a wide-angle shot. The main subject is centered in the 80% of the frame. The bottom 20% of the image is a clean, solid, uncluttered surface (like a floor, ground, or shadow) to allow for text overlay. Do not place any objects in the bottom 20%."
 
 **Step E: Construct the Prompt**
 - **Format:** A single coherent paragraph.
