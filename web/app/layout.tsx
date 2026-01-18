@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fredoka, Quicksand } from "next/font/google";
 import { SessionProvider } from "@/contexts/session.contexts";
+import Script from "next/script";
 
 import "./globals.css";
 
@@ -34,6 +35,11 @@ export default function RootLayout({
         <SessionProvider>
           {children}
         </SessionProvider>
+        <Script
+          src="https://umami-analytics-453586259507.us-central1.run.app/script.js"
+          data-website-id="b8f14cf2-032e-441e-b321-d35e5ecca6b8"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );

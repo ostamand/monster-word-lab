@@ -56,6 +56,11 @@ export default function GeneratePage() {
         async function doGeneration() {
             try {
                 console.log("Starting generation", data);
+
+                if (window.umami) {
+                    window.umami.track("generate", data);
+                }
+
                 const generationResponse = await sendGeneration(data);
                 if (generationResponse.success) {
                     const { data: generationData } = generationResponse;
@@ -88,8 +93,8 @@ export default function GeneratePage() {
                     Daily Limit Reached
                 </h2>
                 <p className="text-white mb-6">
-                    We&apos;ve reached our daily generation limit! The lab needs to
-                    recharge. Please come back tomorrow.
+                    We&apos;ve reached our daily generation limit! The lab needs
+                    to recharge. Please come back tomorrow.
                 </p>
                 <div className="flex justify-center">
                     <Link
