@@ -28,3 +28,22 @@ To provide a friendly, consistent face for the brand, the "Lab" is run by **Prof
 
 > **"Learning through Discovery"**
 > The app avoids a traditional classroom feel. Instead, it frames literacy as a scientific discovery process, using "magical" 3D visuals and tactile textures (like Lex’s soft fur) to make the digital experience feel warm and approachable for young learners.
+
+### **SEO & Public Context**
+
+*   **Official Domain:** `https://www.monsterwordlab.com`
+*   **Staging Domain:** `https://www.monster.ostamand.com`
+*   **Target Audience:** Parents and children (focus on ages 4-7).
+*   **Languages Supported:** English, French, Spanish.
+*   **Cost Model:** 100% Free.
+*   **Key Value Proposition:** A unique experience where kids can either go through an existing library of sentences built specifically for their age along with beautiful images, or generate new ones. For each image/sentence, the kid can listen to the correct sentence. Parents can setup a target word for the kids to learn.
+*   **SEO Keywords:** learn to read, reading app for kids, free educational app, phonics, sight words, bilingual education, spanish for kids, french for kids, reading practice.
+*   **Schema.org Type:** SoftwareApplication / EducationalApplication.
+
+### **Technical Stack**
+
+*   **Framework:** Next.js (App Router)
+*   **Language:** TypeScript
+*   **Styling:** Tailwind CSS
+*   **Analytics:** Umami
+*   **Internationalization:** i18next
