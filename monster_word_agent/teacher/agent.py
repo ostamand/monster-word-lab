@@ -36,7 +36,7 @@ async def main():
     )
 
 
-# python -m  monster-word-agent.teacher.agent
+# python -m  monster_word_agent.teacher.agent
 if __name__ == "__main__":
     load_dotenv()
     asyncio.run(main())

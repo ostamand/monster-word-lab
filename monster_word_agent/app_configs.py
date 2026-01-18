@@ -11,6 +11,7 @@ class Configs:
     llm_model: str
     font_path: str
     generation_collection_name: str
+    local_persistence: bool
 
 load_dotenv()
 
@@ -21,5 +22,6 @@ configs = Configs(
     media_model=os.environ["MEDIA_GENERATION_MODEL"],
     llm_model=os.environ["LLM_MODEL"],
     font_path=os.environ["MEDIA_COMPOSE_FONT_PATH"],
-    generation_collection_name = "learning_generations"
+    generation_collection_name = "learning_generations",
+    local_persistence=os.environ.get("LOCAL_PERSISTENCE", "FALSE") == 'TRUE'
 )

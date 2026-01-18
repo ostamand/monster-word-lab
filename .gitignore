@@ -14,3 +14,4 @@ wheels/
 sessions.db
 Makefile
 ai
+tmp

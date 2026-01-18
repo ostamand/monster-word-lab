@@ -82,12 +82,17 @@ def generate_image_tool(id: str, prompt: str) -> str:
         else:
             image_bytes = image_data
 
-        filename = f"raw/{id}.png"
-        bucket = storage_client.bucket(configs.gcp_media_bucket)
-        blob = bucket.blob(filename)
-        blob.upload_from_string(image_bytes, content_type="image/png")
-
-        return f"gs://{configs.gcp_media_bucket}/{filename}"
+        if configs.local_persistence:
+            local_path = os.path.join("tmp", "raw", f"{id}.png")
+            with open(local_path, "wb") as f:
+                f.write(image_bytes)
+            return os.path.abspath(local_path)
+        else:
+            filename = f"raw/{id}.png"
+            bucket = storage_client.bucket(configs.gcp_media_bucket)
+            blob = bucket.blob(filename)
+            blob.upload_from_string(image_bytes, content_type="image/png")
+            return f"gs://{configs.gcp_media_bucket}/{filename}"
 
     except Exception as e:
         print(f"❌ Image generation failed: {e}")

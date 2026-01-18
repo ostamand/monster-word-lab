@@ -1,5 +1,6 @@
 import io
 import textwrap
+import os
 
 from google.cloud import storage
 from PIL import Image, ImageDraw, ImageFont
@@ -19,24 +20,32 @@ def create_composite_card_tool(id: str, image_path: str, sentence: str) -> str:
     Returns:
         str: The GCS path of the final composite image.
     """
-    if not image_path.startswith("gs://"):
-        return f"Error: Invalid GCS path {image_path}"
+    image_bytes = None
+    bucket = None
+    bucket_name = None
 
-    try:
-        path_parts = image_path.replace("gs://", "").split("/", 1)
-        bucket_name = path_parts[0]
-        source_blob_name = path_parts[1]
-    except IndexError:
-        return f"Error: Could not parse bucket/blob from {image_path}"
+    if configs.local_persistence:
+        with open(image_path, "rb") as f:
+            image_bytes = f.read()   
+    else:
+        if not image_path.startswith("gs://"):
+            return f"Error: Invalid GCS path {image_path}"
 
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(source_blob_name)
+        try:
+            path_parts = image_path.replace("gs://", "").split("/", 1)
+            bucket_name = path_parts[0]
+            source_blob_name = path_parts[1]
+        except IndexError:
+            return f"Error: Could not parse bucket/blob from {image_path}"
 
-    try:
-        image_bytes = blob.download_as_bytes()
-    except Exception as e:
-        return f"Error downloading from GCS: {e}"
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(source_blob_name)
+
+        try:
+            image_bytes = blob.download_as_bytes()
+        except Exception as e:
+            return f"Error downloading from GCS: {e}"
 
     try:
         # Load
@@ -99,18 +108,20 @@ def create_composite_card_tool(id: str, image_path: str, sentence: str) -> str:
 
     except Exception as e:
         return f"Error processing image with PIL: {e}"
+    
+    if configs.local_persistence:
+        local_file_path = os.path.join("tmp", "composed", f"{id}.png")
+        with open(local_file_path, "wb") as f:
+            f.write(output_bytes)
+        return os.path.abspath(local_file_path)
+    else:
+        final_blob_name = f"composed/{id}.png"
+        final_blob = bucket.blob(final_blob_name)
+        final_blob.upload_from_string(output_bytes, content_type="image/png")
+        return f"gs://{bucket_name}/{final_blob_name}"
 
-    # 5. Upload Final Image to GCS
-    final_blob_name = f"composed/{id}.png"
-    final_blob = bucket.blob(final_blob_name)
 
-    final_blob.upload_from_string(output_bytes, content_type="image/png")
-
-    # 6. Return the new URI
-    return f"gs://{bucket_name}/{final_blob_name}"
-
-
-# uv run -m src.builder.tools.combine
+# uv run -m monster_word_agent.builder.tools.combine
 if __name__ == "__main__":
     from dotenv import load_dotenv
 

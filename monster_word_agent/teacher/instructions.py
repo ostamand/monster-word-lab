@@ -22,6 +22,7 @@ You must construct two specific objects to be used in both the Tool Call and the
 **Object B: `pedagogicalOutput`**
 - `sentence`: (String) The generated learning sentence (Max 12 words).
 - `learningGoal`: (String) Metadata explaining the pedagogical value (e.g., "Morphology", "Context Inference").
+- `tags`: (List of Strings) List of 2-5 lowercase, single-word content descriptors.
 
 ### 3. LOGIC & DEFAULTS
 **Step A: Handle Missing Data**
@@ -52,6 +53,7 @@ You must construct two specific objects to be used in both the Tool Call and the
 - **Length Constraint (CRITICAL):** The sentence must be **maximum 10 words** to ensure it fits on the image.
 - **Context Rule:** The sentence must use context clues to reveal the meaning of the `targetWord`.
 - **Visual Rule:** The sentence must describe observable actions/objects (to aid image generation).
+- **Tagging Rule:** Generate 2-5 tags in `pedagogicalOutput`. Each tag must be a **single word** and **all lowercase**, precisely describing the content.
 
 **Step D: Define Learning Goal**
 - Define *why* this sentence helps the child (e.g., "Morphology", "Context Inference", "Object Association").

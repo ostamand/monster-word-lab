@@ -1,5 +1,9 @@
-from typing import TypedDict, Optional, Literal
+from typing import TypedDict, Literal, List
 import uuid
+import json
+import os
+from datetime import datetime
+
 from google.cloud import firestore
 
 from ..database import db
@@ -16,6 +20,7 @@ class UserInput(TypedDict):
 class PedagogicalOutput(TypedDict):
     sentence: str
     learningGoal: str
+    tags: List[str]
 
 
 def persist_learning_data(userInput, pedagogicalOutput) -> str:
@@ -38,6 +43,7 @@ def persist_learning_data(userInput, pedagogicalOutput) -> str:
             generated content. Must include:
             - 'sentence': The generated learning sentence.
             - 'learningGoal': Metadata explaining the pedagogical intent.
+            - 'tags': A list of 2-5 lowercase, single-word descriptive tags.
 
     Returns:
         Optional[str]:
@@ -55,8 +61,15 @@ def persist_learning_data(userInput, pedagogicalOutput) -> str:
             "created_at": firestore.SERVER_TIMESTAMP,
         }
 
-        doc_ref = db.collection(configs.generation_collection_name).document(unique_id)
-        doc_ref.set(doc_data)
+        print(configs)
+
+        if configs.local_persistence:
+            doc_data["created_at"] = datetime.now().isoformat()
+            with open(os.path.join("tmp", f"{unique_id}.json"), "w",  encoding="utf-8") as f:
+                json.dump(doc_data, f, indent=4)
+        else:
+            doc_ref = db.collection(configs.generation_collection_name).document(unique_id)
+            doc_ref.set(doc_data)
 
         return unique_id
 

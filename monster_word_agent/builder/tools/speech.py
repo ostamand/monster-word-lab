@@ -2,6 +2,8 @@ import os
 from google.cloud import texttospeech
 from google.cloud import storage
 
+from ...app_configs import configs
+
 
 def generate_speech_tool(generation_id: str, text: str, language: str) -> str:
     """
@@ -48,15 +50,19 @@ def generate_speech_tool(generation_id: str, text: str, language: str) -> str:
             input=synthesis_input, voice=voice, audio_config=audio_config
         )
 
-        storage_client = storage.Client(project=project_id)
-        bucket = storage_client.bucket(bucket_name)
-
-        filename = f"audio/{generation_id}.mp3"
-        blob = bucket.blob(filename)
-
-        blob.upload_from_string(response.audio_content, content_type="audio/mpeg")
-
-        return f"gs://{bucket_name}/{filename}"
+        if configs.local_persistence:
+            local_dir = os.path.join("tmp", "audio")
+            local_file_path = os.path.join(local_dir, f"{generation_id}.mp3")
+            with open(local_file_path, "wb") as f:
+                f.write(response.audio_content)
+            return os.path.abspath(local_file_path)
+        else:
+            storage_client = storage.Client(project=project_id)
+            bucket = storage_client.bucket(bucket_name)
+            filename = f"audio/{generation_id}.mp3"
+            blob = bucket.blob(filename)
+            blob.upload_from_string(response.audio_content, content_type="audio/mpeg")
+            return f"gs://{bucket_name}/{filename}"
 
     except Exception as e:
         print(f"❌ TTS Generation failed: {e}")

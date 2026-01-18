@@ -17,6 +17,7 @@ You will receive a single JSON object with the following structure. You must par
   "pedagogicalOutput": {
     "sentence": string,             // Use this to determine SUBJECT & ACTION
     "learningGoal": string
+    "tags": string
   }
 }
 
