@@ -1,0 +1,17 @@
+{
+  "language_selector": "Langue",
+  "choose_language": "Choisir la Langue",
+  "select_age": "Choisir l'Âge",
+  "theme_optional": "Thème (Optionnel)",
+  "target_word_optional": "Mot Cible (Optionnel)",
+  "theme_placeholder": "ex. Espace, Dinosaures",
+  "target_word_placeholder": "ex. Gravité",
+  "random_button": "Aléatoire!",
+  "explore_experiments": "Explorer Expériences",
+  "start_experiment": "Nouvel Expérience",
+  "loading_discovery": "Recherche de découverte...",
+  "no_discoveries_title": "Aucune découverte trouvée",
+  "no_discoveries_message": "Nous n'avons trouvé aucun produit existant pour cette langue et ce groupe d'âge.",
+  "create_new_experiment": "Créer une Nouvelle Expérience",
+  "try_different_settings": "Essayer d'autres paramètres"
+}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fredoka, Quicksand } from "next/font/google";
 import { SessionProvider } from "@/contexts/session.contexts";
+import I18nProvider from "@/components/I18nProvider";
 import Script from "next/script";
 
 import "./globals.css";
@@ -32,9 +33,11 @@ export default function RootLayout({
       <body
         className={`${fredoka.variable} ${quicksand.variable} antialiased font-fredoka`}
       >
-        <SessionProvider>
-          {children}
-        </SessionProvider>
+        <I18nProvider>
+          <SessionProvider>
+            {children}
+          </SessionProvider>
+        </I18nProvider>
         {/* disable umami tracking: localStorage.setItem("umami.disabled", "true") */}
         <Script
           src="https://umami-analytics-453586259507.us-central1.run.app/script.js"

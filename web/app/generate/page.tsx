@@ -135,10 +135,10 @@ export default function GeneratePage() {
                 {/* Title */}
                 <div className="animate-fade-in-down pointer-events-auto">
                     <Image
-                        src="/generate/title.png"
+                        src="/common/title-v2.webp"
                         alt="Monster Word Lab"
-                        width={800}
-                        height={400}
+                        width={1412}
+                        height={209}
                         className="w-[350px] md:w-[600px] lg:w-[800px] h-auto drop-shadow-2xl transition-transform hover-wobble-custom"
                         priority
                     />

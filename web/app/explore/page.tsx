@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useSessionContext } from "@/contexts/session.contexts";
 import { getRandomGeneration, PossibleLanguages } from "@/lib/generations";
@@ -11,6 +12,7 @@ import LoadingAnimation from "@/components/LoadingAnimation";
 import Modal from "@/components/Modal";
 
 export default function ExplorePage() {
+    const { t } = useTranslation();
     const { startSession, clearSession } = useSessionContext();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -94,8 +96,9 @@ export default function ExplorePage() {
                 <main className="absolute inset-0 flex items-center justify-start w-full p-8 md:p-14 pointer-events-none z-30">
                     <SelectionPanel
                         onStart={handleExplore}
-                        buttonImageSrc="/explore/rnd.png"
+                        buttonImageSrc="/explore/rnd-shape.png"
                         buttonAltText="Random"
+                        buttonTextKey="random_button"
                         showTheme={false}
                         showTargetWord={false}
                     />
@@ -105,31 +108,30 @@ export default function ExplorePage() {
             {/* Loading Overlay */}
             {isLoading && (
                 <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                    <LoadingAnimation message="Finding a discovery..." />
+                    <LoadingAnimation message={t("loading_discovery")} />
                 </div>
             )}
 
             {/* Error Overlay */}
             <Modal isOpen={showError}>
                 <h2 className="text-2xl font-bold text-sky-400 mb-4">
-                    No Discoveries Found
+                    {t("no_discoveries_title")}
                 </h2>
                 <p className="text-white mb-6">
-                    We couldn&apos;t find any existing experiments for this
-                    language and age group.
+                    {t("no_discoveries_message")}
                 </p>
                 <div className="flex flex-col gap-4">
                     <button
                         onClick={() => router.push("/start")}
                         className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-full transition-colors pointer-events-auto shadow-lg"
                     >
-                        Create New Experiment
+                        {t("create_new_experiment")}
                     </button>
                     <button
                         onClick={() => setShowError(false)}
                         className="border-2 border-sky-500 text-sky-400 hover:bg-sky-500/10 font-bold py-2 px-4 rounded-full transition-colors pointer-events-auto"
                     >
-                        Try Different Settings
+                        {t("try_different_settings")}
                     </button>
                 </div>
             </Modal>
