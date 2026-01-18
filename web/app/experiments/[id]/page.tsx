@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useSessionContext } from "@/contexts/session.contexts";
 import LoadingAnimation from "@/components/LoadingAnimation";
@@ -50,16 +50,17 @@ export default function ExperimentPage() {
         fetchGeneration();
     }, [id]);
 
-    function playAudio() {
+    const playAudio = useCallback(() => {
         if (generation?.final_audio_gcs_path) {
             const audio = new Audio(generation.final_audio_gcs_path);
             audio.play().catch((err) =>
                 console.error("Failed to play audio:", err)
             );
         }
-    }
+    }, [generation?.final_audio_gcs_path]);
 
-    async function handleNext() {
+    const handleNext = useCallback(async () => {
+        if (loading) return;
         setLoading(true);
         const nextGen = await getNextGeneration();
 
@@ -70,7 +71,24 @@ export default function ExperimentPage() {
         } else {
             setLoading(false);
         }
-    }
+    }, [loading, getNextGeneration]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (loading || state === "congratulations") return;
+
+            if (event.code === "Space") {
+                event.preventDefault();
+                handleNext();
+            } else if (event.code === "Tab") {
+                event.preventDefault();
+                playAudio();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [handleNext, playAudio, loading, state]);
 
     return (
         <div className="relative h-full w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">

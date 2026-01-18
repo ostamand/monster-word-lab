@@ -148,7 +148,7 @@ export default function GeneratePage() {
                 </div>
 
                 {/* Left-aligned Content Container */}
-                <div className="flex flex-grow w-full items-center justify-start pl-4 sm:pl-12 md:pl-24">
+                <div className="flex flex-grow w-full items-center justify-center md:justify-start md:pl-24">
                     <div className="flex flex-col items-center">
                         {/* Loading Container */}
                         <div className="relative animate-bounce-slow">
