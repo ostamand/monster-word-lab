@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { useSessionContext } from "@/contexts/session.contexts";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import CongratulationsVideo from "@/components/CongratulationsVideo";
 
 export default function ExperimentPage() {
     const params = useParams();
@@ -21,6 +22,9 @@ export default function ExperimentPage() {
         getGenerationFromId,
         clearSession,
         generation,
+        language,
+        sessionCount,
+        sessionLimit,
     } = useSessionContext();
 
     useEffect(() => {
@@ -57,9 +61,12 @@ export default function ExperimentPage() {
 
     async function handleNext() {
         setLoading(true);
-        const generation = await getNextGeneration();
-        if (!generation) {
-            router.push("/");
+        const nextGen = await getNextGeneration();
+
+        if (!nextGen) {
+            // Session over (limit reached or no more images).
+            // Stop loading to allow re-render with "congratulations" state (and video overlay).
+            setLoading(false);
         } else {
             setLoading(false);
         }
@@ -115,15 +122,23 @@ export default function ExperimentPage() {
                         </a>
                     </div>
 
+                    {/* Progress Indicator - Top Center */}
+                    <div className="absolute left-1/2 top-8 md:top-14 -translate-x-1/2 transform pointer-events-auto">
+                        <div className="rounded-full bg-black/40 px-6 py-2 backdrop-blur-md border border-white/10 shadow-lg">
+                            <span className="text-lg md:text-xl font-bold text-white/90 font-mono tracking-wider">
+                                {Math.min(sessionCount, sessionLimit)} / {sessionLimit}
+                            </span>
+                        </div>
+                    </div>
+
                     {/* Speech Button - Top Right */}
                     <div className="pointer-events-auto transition-transform hover:scale-110 active:scale-95">
                         <button
                             onClick={playAudio}
-                            className={`focus:outline-none ${
-                                !generation?.final_audio_gcs_path
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : ""
-                            }`}
+                            className={`focus:outline-none ${!generation?.final_audio_gcs_path
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
+                                }`}
                             disabled={!generation?.final_audio_gcs_path}
                         >
                             <Image
@@ -161,14 +176,16 @@ export default function ExperimentPage() {
                                         />
                                     )
                                     : (
-                                        <div className="flex items-center justify-center w-full h-full max-w-4xl max-h-[80vh] bg-black/50 rounded-lg border-2 border-white/20 backdrop-blur-sm pointer-events-auto">
-                                            <div className="text-white/50 p-8 text-center">
-                                                <span className="text-xl">
-                                                    Experiment {id}{" "}
-                                                    Visualization (No Data)
-                                                </span>
+                                        state !== "congratulations" && (
+                                            <div className="flex items-center justify-center w-full h-full max-w-4xl max-h-[80vh] bg-black/50 rounded-lg border-2 border-white/20 backdrop-blur-sm pointer-events-auto">
+                                                <div className="text-white/50 p-8 text-center">
+                                                    <span className="text-xl">
+                                                        Experiment {id}{" "}
+                                                        Visualization (No Data)
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
+                                        )
                                     )}
                             </>
                         )}
@@ -189,6 +206,17 @@ export default function ExperimentPage() {
                         </button>
                     </div>
                 </footer>
+
+                {/* Congratulations Video Overlay */}
+                {state === "congratulations" && (
+                    <CongratulationsVideo
+                        language={language || "en"}
+                        onComplete={() => {
+                            clearSession();
+                            router.push("/");
+                        }}
+                    />
+                )}
             </div>
         </div>
     );

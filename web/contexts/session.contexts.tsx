@@ -5,7 +5,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 import { GenerationOutput, PossibleLanguages } from "@/lib/generations";
 import { getGenerationById, getRandomGeneration } from "@/lib/generations";
 
-type SessionState = "waiting" | "running" | "done";
+type SessionState = "waiting" | "running" | "done" | "congratulations";
 
 type SessionContextType = {
     state: SessionState;
@@ -25,12 +25,16 @@ type SessionContextType = {
     ) => Promise<GenerationOutput | null>;
     getGenerationFromId: (id: string) => Promise<GenerationOutput | null>;
     clearSession: () => void;
+    sessionCount: number;
+    sessionLimit: number;
 };
 
 type SessionHistory = {
     generation: GenerationOutput;
     successful: boolean | undefined;
 };
+
+const MAX_SESSION_IMAGES = 10;
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
@@ -66,6 +70,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             }
         }
 
+        // Check if we hit the limit
+        if (updatedHistory.length >= MAX_SESSION_IMAGES) {
+            console.log("Session limit reached");
+            setState("congratulations");
+            setGeneration(null);
+            return null;
+        }
+
         const completedIds = updatedHistory.map((h) => h.generation.id);
 
         const nextGeneration = await getRandomGeneration(
@@ -75,18 +87,18 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         );
 
         if (!nextGeneration) {
-            console.log("we are done");
-            // we are done
-            setState("done");
+            console.log("No more generations available");
+            // we are effectively done with this batch, show congratulations
+            setState("congratulations");
             setGeneration(null);
             return null;
         }
 
-        console.log(nextGeneration);
+        console.log("Next generation:", nextGeneration);
 
         setGeneration(nextGeneration);
 
-        return generation;
+        return nextGeneration;
     };
 
     const getGenerationFromId = async (id: string) => {
@@ -124,6 +136,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         getNextGeneration,
         getGenerationFromId,
         clearSession,
+        sessionCount: history.length + 1,
+        sessionLimit: MAX_SESSION_IMAGES,
     };
 
     return (

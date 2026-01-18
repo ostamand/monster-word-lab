@@ -90,7 +90,9 @@ export async function getRandomGeneration(
         });
         const data = await response.json() as GenerationOutput;
         if (!response.ok) {
-            console.error(data);
+            if (response.status !== 404) {
+                console.error(data);
+            }
             return null;
         }
         return data;
