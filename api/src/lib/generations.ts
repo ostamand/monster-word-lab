@@ -17,6 +17,13 @@ type RunPayload = {
     streaming: boolean;
 };
 
+function cleanJsonOutput(llmOutput: string): string {
+    return llmOutput
+        .replace(/^```json\s*/, "") // Remove start fence with json tag
+        .replace(/^```\s*/, "") // Remove start fence without tag
+        .replace(/\s*```$/, ""); // Remove end fence
+}
+
 export async function sendGeneration(request: GenerationInput) {
     try {
         const client = await auth.getIdTokenClient(configs.generationEndpoint);
@@ -63,10 +70,12 @@ export async function sendGeneration(request: GenerationInput) {
         const data = runResponse.data;
 
         // get final answer
-
         const builderData = Array.isArray(data) ? data[data.length - 1] : data;
 
-        const answer = JSON.parse(builderData.content.parts[0].text) as {
+        const rawText = builderData.content.parts[0].text;
+        const cleanText = cleanJsonOutput(rawText);
+
+        const answer = JSON.parse(cleanText) as {
             id: string;
             final_image_gcs_path: string;
             final_audio_gcs_path: string;
