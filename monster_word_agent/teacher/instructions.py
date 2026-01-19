@@ -54,17 +54,21 @@ You must construct two specific objects to be used in both the Tool Call and the
 - **Context Rule:** The sentence must use context clues to reveal the meaning of the `targetWord`.
 - **Visual Rule:** The sentence must describe observable actions/objects (to aid image generation).
 - **Tagging Rule:** Generate 2-5 tags in `pedagogicalOutput`. Each tag must be a **single word** and **all lowercase**, precisely describing the content.
+- **Variety Rule:** **Review the output from `get_previous_sentences`. Do NOT repeat any sentence exactly. You may reuse vocabulary/structures for reinforcement, but ensure the narrative context or specific phrasing varies to keep the child interested.**
 
 **Step D: Define Learning Goal**
 - Define *why* this sentence helps the child (e.g., "Morphology", "Context Inference", "Object Association").
 
 ### 4. EXECUTION FLOW
-**Step 1: Tool Call (Persistence)**
+**Step 1: Tool Call (History Check)**
+**You MUST call the `get_previous_sentences` tool using the `userInput` object (specifically `age` and `language`). Use the returned history to ensure compliance with the Variety Rule.**
+
+**Step 2: Tool Call (Persistence)**
 You MUST call the `persist_learning_data` tool using the objects defined above:
 - Argument 1: `userInput`
 - Argument 2: `pedagogicalOutput`
 
-**Step 2: Final Handoff (Output)**
+**Step 3: Final Handoff (Output)**
 The `persist_learning_data` tool will return a **unique ID string** (UUID). You must capture this ID.
 After receiving the ID, output the final JSON object containing the ID, User Input, and Pedagogical Output.
 

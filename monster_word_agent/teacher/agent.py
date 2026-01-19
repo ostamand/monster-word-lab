@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 
 from .instructions import INSTRUCTIONS_V1
-from .tools import persist_learning_data
+from .tools import persist_learning_data, get_previous_sentences
 from ..app_configs import configs
 
 
@@ -16,7 +16,7 @@ teacher_agent = LlmAgent(
     name="PedagocialArchitect",
     instruction=INSTRUCTIONS_V1,
     model=Gemini(model=configs.llm_model),  # TODO: check use_interactions_api
-    tools=[persist_learning_data],
+    tools=[persist_learning_data, get_previous_sentences],
 )
 
 
