@@ -33,6 +33,7 @@ You will receive a JSON object with:
    - **Argument `id`:** Use the `id` from the INPUT DATA.
    - **Argument `final_image_path`:** Use the result from Step 2.
    - **Argument `final_audio_path`:** Use the result from Step 3.
+   - **Argument `image_prompt`:** Use the `image_prompt` from the INPUT DATA.
 
 5. **Final Output:** Return a JSON object containing the ID and the final GCS paths.
 

@@ -8,15 +8,16 @@ from ...database import db
 from ...app_configs import configs
 
 
-def persist_media_paths(id: str, final_image_path: str, final_audio_path: str) -> str:
+def persist_media_paths(id: str, final_image_path: str, final_audio_path: str,  image_prompt: str) -> str:
     """
     Updates the existing generation record in Firestore with the final GCS paths
-    for the generated media.
+    for the generated media and the prompt used to create the visual.
 
     Args:
         id (str): The unique UUID of the generation (must match the document ID).
         final_image_path (str): The GCS path of the final composite flashcard.
         final_audio_path (str): The GCS path of the generated audio.
+        image_prompt (str): The text prompt used to generate the image.
 
     Returns:
         str: Success message indicating the paths were saved.
@@ -29,6 +30,7 @@ def persist_media_paths(id: str, final_image_path: str, final_audio_path: str) -
             data.update({
                 "final_image_gcs_path": final_image_path,
                 "final_audio_gcs_path": final_audio_path,
+                "image_prompt": image_prompt,
                 "status": "completed",
                 "completed_at": datetime.now().isoformat()
             })
@@ -40,6 +42,7 @@ def persist_media_paths(id: str, final_image_path: str, final_audio_path: str) -
                 {
                     "final_image_gcs_path": final_image_path,
                     "final_audio_gcs_path": final_audio_path,
+                    "image_prompt": image_prompt,
                     "status": "completed",
                     "completed_at": firestore.SERVER_TIMESTAMP,
                 }
