@@ -21,12 +21,11 @@ builder_agent = LlmAgent(
 
 
 async def main():
-    from ..teacher.agent import teacher_agent
-    from ..creative.agent import creative_agent
+    from ..designer.agent import designer_agent
 
     sequential_agent = SequentialAgent(
         name="SequentialAgent",
-        sub_agents=[teacher_agent, creative_agent, builder_agent],
+        sub_agents=[designer_agent, builder_agent],
     )
 
     runner = InMemoryRunner(agent=sequential_agent)
