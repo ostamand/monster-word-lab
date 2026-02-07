@@ -1,6 +1,7 @@
 import os
 import uuid
 import base64
+import time
 from typing import Dict
 
 from google import genai
@@ -60,13 +61,25 @@ def generate_image_tool(id: str, prompt: str) -> str:
         ),
     )
 
-    try:
-        response = ai_client.models.generate_content(
-            model=configs.media_model,
-            contents=contents,
-            config=generate_content_config,
-        )
+    max_retries = 3
+    retry_delay = 1  # second
+    
+    for attempt in range(max_retries):
+        try:
+            response = ai_client.models.generate_content(
+                model=configs.media_model,
+                contents=contents,
+                config=generate_content_config,
+            )
+            break  # Success!
+        except Exception as e:
+            if "429" in str(e) and attempt < max_retries - 1:
+                print(f"⚠️ Rate limited (429). Retrying in {retry_delay}s... (Attempt {attempt + 1}/{max_retries})")
+                time.sleep(retry_delay)
+                continue
+            raise e
 
+    try:
         image_data = None
         if response.candidates and response.candidates[0].content.parts:
             for part in response.candidates[0].content.parts:
