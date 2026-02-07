@@ -52,6 +52,7 @@ def generate_speech_tool(generation_id: str, text: str, language: str) -> str:
 
         if configs.local_persistence:
             local_dir = os.path.join("tmp", "audio")
+            os.makedirs(local_dir, exist_ok=True)
             local_file_path = os.path.join(local_dir, f"{generation_id}.mp3")
             with open(local_file_path, "wb") as f:
                 f.write(response.audio_content)

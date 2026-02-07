@@ -7,10 +7,7 @@ from google.adk.runners import InMemoryRunner
 from dotenv import load_dotenv
 
 from .instructions import INSTRUCTIONS_V1
-from .tools.combine import create_composite_card_tool
-from .tools.generate import generate_image_tool
-from .tools.speech import generate_speech_tool
-from .tools.persistence import persist_media_paths
+from .tools.orchestrator import build_media_assets_tool
 from ..app_configs import configs
 
 builder_agent = LlmAgent(
@@ -18,10 +15,7 @@ builder_agent = LlmAgent(
     instruction=INSTRUCTIONS_V1,
     model=Gemini(model=configs.llm_model),
     tools=[
-        generate_image_tool,
-        generate_speech_tool,
-        create_composite_card_tool,
-        persist_media_paths,
+        build_media_assets_tool,
     ],
 )
 
@@ -41,7 +35,7 @@ async def main():
         "age": 5,
         "language": "fr",
         "theme": None,
-        "targetWord": "petit",
+        "targetWord": None,
     }
 
     response = await runner.run_debug(

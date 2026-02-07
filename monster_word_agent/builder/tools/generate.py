@@ -83,7 +83,9 @@ def generate_image_tool(id: str, prompt: str) -> str:
             image_bytes = image_data
 
         if configs.local_persistence:
-            local_path = os.path.join("tmp", "raw", f"{id}.png")
+            local_dir = os.path.join("tmp", "raw")
+            os.makedirs(local_dir, exist_ok=True)
+            local_path = os.path.join(local_dir, f"{id}.png")
             with open(local_path, "wb") as f:
                 f.write(image_bytes)
             return os.path.abspath(local_path)
@@ -99,12 +101,13 @@ def generate_image_tool(id: str, prompt: str) -> str:
         raise e
 
 
-# uv run -m src.builder.tools.generate
+# uv run -m monster_word_agent.builder.tools.generate
 if __name__ == "__main__":
     from dotenv import load_dotenv
 
     load_dotenv()
 
+    test_id = str(uuid.uuid4())
     test_prompt = """
         A whimsical digital storybook art illustration showing a small young boy looking up in amazement at an enormous, friendly yellow dog in a sunny neighborhood park. 
         The dog's soft golden fur is rendered with warm, vibrant tones, and its massive scale compared to the boy creates a sense of wonder and friendliness. 
@@ -114,6 +117,6 @@ if __name__ == "__main__":
         Do not place any objects in the bottom 20%.
     """
 
-    response = generate_image_tool(test_prompt)
+    response = generate_image_tool(test_id, test_prompt)
 
     print(response)

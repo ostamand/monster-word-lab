@@ -104,20 +104,22 @@ def create_composite_card_tool(id: str, image_path: str, sentence: str) -> str:
         # 4. Save to Buffer
         output_buffer = io.BytesIO()
         base.save(output_buffer, format="PNG")
-        output_bytes = output_buffer.getvalue()
+        output_buffer.seek(0)
 
     except Exception as e:
         return f"Error processing image with PIL: {e}"
     
     if configs.local_persistence:
-        local_file_path = os.path.join("tmp", "composed", f"{id}.png")
+        local_dir = os.path.join("tmp", "composed")
+        os.makedirs(local_dir, exist_ok=True)
+        local_file_path = os.path.join(local_dir, f"{id}.png")
         with open(local_file_path, "wb") as f:
-            f.write(output_bytes)
+            f.write(output_buffer.getbuffer())
         return os.path.abspath(local_file_path)
     else:
         final_blob_name = f"composed/{id}.png"
         final_blob = bucket.blob(final_blob_name)
-        final_blob.upload_from_string(output_bytes, content_type="image/png")
+        final_blob.upload_from_file(output_buffer, content_type="image/png")
         return f"gs://{bucket_name}/{final_blob_name}"
 
 
