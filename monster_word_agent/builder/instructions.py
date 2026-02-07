@@ -18,8 +18,15 @@ You will receive a JSON object with:
    - **Argument `sentence`:** Use the `sentence` from the INPUT DATA.
    - **Argument `language`:** Use the `language` from the INPUT DATA.
 
-2. **Final Output:** Return the JSON object provided by the tool.
+2. **Final Output:** Return a JSON object containing the ID and the final paths.
 
 ### OUTPUT FORMAT
 You must output a **single valid JSON object**. Do not include markdown formatting like ```json.
+
+Structure:
+{
+    "id": "<ECHO from input.id>",
+    "final_image_gcs_path": "<Result from tool>",
+    "final_audio_gcs_path": "<Result from tool>"
+}
 """
