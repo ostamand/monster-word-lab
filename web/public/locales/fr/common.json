@@ -6,6 +6,8 @@
   "target_word_optional": "Mot Cible (Optionnel)",
   "theme_placeholder": "ex. Espace, Dinosaures",
   "target_word_placeholder": "ex. Gravité",
+  "choose_theme": "Choisir le Thème",
+  "choose_word": "Choisir le Mot",
   "random_button": "Aléatoire!",
   "explore_experiments": "Explorer Expériences",
   "start_experiment": "Nouvel Expérience",

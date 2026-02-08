@@ -1,0 +1,10 @@
+[
+  { "id": "space", "image": "/kid-mode/themes/space.webp" },
+  { "id": "jungle", "image": "/kid-mode/themes/jungle.webp" },
+  { "id": "ocean", "image": "/kid-mode/themes/ocean.webp" },
+  { "id": "magic", "image": "/kid-mode/themes/magic.webp" },
+  { "id": "dinosaur", "image": "/kid-mode/themes/dinosaur.webp" },
+  { "id": "candy", "image": "/kid-mode/themes/candy.webp" },
+  { "id": "robot", "image": "/kid-mode/themes/robot.webp" },
+  { "id": "pirates", "image": "/kid-mode/themes/pirates.webp" }
+]

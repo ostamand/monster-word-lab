@@ -78,7 +78,19 @@ html {
 }
 
 .hover-wobble-custom:hover {
+
   animation: wobble 1s ease-in-out infinite;
+
   cursor: pointer;
+
   /* Ensure cursor changes */
+
+}
+
+
+
+.animate-initial-wobble {
+
+  animation: wobble 1s ease-in-out 3; /* Wiggle for ~3 seconds on load */
+
 }

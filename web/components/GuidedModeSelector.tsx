@@ -2,23 +2,22 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { useTranslation } from "react-i18next";
+import { useSessionContext } from "@/contexts/session.contexts";
 
-export default function LanguageSelector() {
-    const { i18n } = useTranslation();
+export default function GuidedModeSelector() {
+    const { guidedMode, setGuidedMode } = useSessionContext();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const languages = [
-        { code: "en", src: "/landing/select-language/english-select.webp", alt: "English" },
-        { code: "es", src: "/landing/select-language/spanish-select.webp", alt: "Español" },
-        { code: "fr", src: "/landing/select-language/french-select.webp", alt: "Français" },
+    const modes = [
+        { code: "parent", src: "/landing/select-mode/parent-select.webp", alt: "Parent Mode" },
+        { code: "kid", src: "/landing/select-mode/kid-select.webp", alt: "Kid Mode" },
     ];
 
     const toggleOpen = () => setIsOpen(!isOpen);
 
-    const changeLanguage = (langCode: string) => {
-        i18n.changeLanguage(langCode);
+    const changeMode = (mode: "parent" | "kid") => {
+        setGuidedMode(mode);
         setIsOpen(false);
     };
 
@@ -44,8 +43,8 @@ export default function LanguageSelector() {
                 className="relative transition-transform hover:scale-105 active:scale-95 focus:outline-none"
             >
                 <Image
-                    src="/landing/select-language/select.webp"
-                    alt="Language"
+                    src="/landing/select-mode/select.webp"
+                    alt="Mode Selection"
                     width={200}
                     height={60}
                     className="w-[110px] md:w-[180px] h-auto drop-shadow-lg"
@@ -55,17 +54,17 @@ export default function LanguageSelector() {
             {/* Dropdown Options */}
             {isOpen && (
                 <div className="absolute top-full right-0 mt-2 flex flex-col gap-2 animate-fade-in-down origin-top-right">
-                    {languages.map((lang) => (
+                    {modes.map((mode) => (
                         <button
-                            key={lang.code}
-                            onClick={() => changeLanguage(lang.code)}
+                            key={mode.code}
+                            onClick={() => changeMode(mode.code as "parent" | "kid")}
                             className={`relative transition-transform hover:scale-105 active:scale-95 focus:outline-none ${
-                                i18n.language === lang.code ? "brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" : "brightness-90 hover:brightness-100"
+                                guidedMode === mode.code ? "brightness-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" : "brightness-90 hover:brightness-100"
                             }`}
                         >
                             <Image
-                                src={lang.src}
-                                alt={lang.alt}
+                                src={mode.src}
+                                alt={mode.alt}
                                 width={200}
                                 height={60}
                                 className="w-[110px] md:w-[180px] h-auto drop-shadow-md"

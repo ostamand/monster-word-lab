@@ -69,6 +69,8 @@ type GenerateResponse = {
 
 generationsRouter.post("/", async (req: Request, res: Response) => {
     const data = req.body as GenerationInput;
+
+    console.log(data);
     if (!data) {
         return res.status(400).json({ message: "Bad request for generation." });
     }

@@ -1,0 +1,23 @@
+{
+  "en": {
+    "3": ["the", "a", "is", "it", "in", "to", "go", "me", "my", "up", "no", "yes", "and", "can", "look", "see"],
+    "4": ["at", "on", "for", "with", "here", "said", "you", "are", "play", "run", "big", "little", "down", "help", "away", "come"],
+    "5": ["rocket", "star", "boat", "house", "fast", "slow", "happy", "sad", "hot", "cold", "soft", "hard", "red", "blue", "green", "yellow"],
+    "6": ["planet", "forest", "dragon", "robot", "treasure", "map", "bright", "dark", "heavy", "light", "careful", "clever", "hungry", "thirsty", "strong", "brave"],
+    "7": ["asteroid", "volcano", "wizard", "machine", "mystery", "crystal", "energy", "curious", "patient", "honest", "helpful", "ancient", "modern", "liquid", "solid", "balance"]
+  },
+  "fr": {
+    "3": ["le", "la", "un", "une", "est", "il", "dans", "et", "je", "me", "moi", "oui", "non", "va", "ici", "voir"],
+    "4": ["sur", "pour", "avec", "dit", "tu", "est", "joue", "petit", "grand", "bas", "aide", "viens", "regarde", "mange", "saute", "cours"],
+    "5": ["fusée", "étoile", "bateau", "maison", "vite", "lent", "content", "triste", "chaud", "froid", "doux", "dur", "rouge", "bleu", "vert", "jaune"],
+    "6": ["planète", "forêt", "dragon", "robot", "trésor", "carte", "brillant", "sombre", "lourd", "léger", "prudent", "malin", "affamé", "assoiffé", "fort", "brave"],
+    "7": ["astéroïde", "volcan", "sorcier", "machine", "mystère", "cristal", "énergie", "curieux", "patient", "honnête", "serviable", "ancien", "moderne", "liquide", "solide", "équilibre"]
+  },
+  "es": {
+    "3": ["el", "la", "un", "una", "es", "en", "y", "yo", "mí", "mi", "sí", "no", "va", "ve", "mira", "aquí"],
+    "4": ["con", "para", "por", "dice", "tú", "eres", "juega", "corre", "gran", "poco", "abajo", "ayuda", "vuelve", "mira", "salta", "come"],
+    "5": ["cohete", "estrella", "barco", "casa", "rápido", "lento", "feliz", "triste", "caliente", "frío", "suave", "duro", "rojo", "azul", "verde", "amarillo"],
+    "6": ["planeta", "selva", "dragón", "robot", "tesoro", "mapa", "brillante", "oscuro", "pesado", "ligero", "cuidadoso", "listo", "hambriento", "sediento", "fuerte", "valiente"],
+    "7": ["asteroide", "volcán", "mago", "máquina", "misterio", "cristal", "energía", "curioso", "paciente", "honesto", "amable", "antiguo", "moderno", "líquido", "sólido", "equilibrio"]
+  }
+}

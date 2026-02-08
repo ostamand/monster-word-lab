@@ -1,19 +1,22 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState, useEffect } from "react";
 
 import { GenerationOutput, PossibleLanguages } from "@/lib/generations";
 import { getGenerationById, getRandomGeneration } from "@/lib/generations";
 
 type SessionState = "waiting" | "running" | "done" | "congratulations";
+export type GuidedMode = "kid" | "parent";
 
 type SessionContextType = {
     state: SessionState;
     generation: GenerationOutput | null;
     language: PossibleLanguages | null;
+    guidedMode: GuidedMode;
     age: number | null;
     theme: string | null;
     targetWord: string | null;
+    setGuidedMode: (mode: GuidedMode) => void;
     startSession: (
         language: PossibleLanguages,
         age: number | null,
@@ -43,9 +46,24 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const [generation, setGeneration] = useState<GenerationOutput | null>(null);
     const [history, setHistory] = useState<SessionHistory[]>([]);
     const [language, setLanguage] = useState<PossibleLanguages | null>(null);
+    const [guidedMode, setGuidedModeState] = useState<GuidedMode>("parent");
     const [age, setAge] = useState<number | null>(null);
     const [theme, setTheme] = useState<string | null>(null);
     const [targetWord, setTargetWord] = useState<string | null>(null);
+
+    // Load guided mode from localStorage on mount
+    useEffect(() => {
+        const savedMode = localStorage.getItem("guidedMode") as GuidedMode;
+        if (savedMode === "kid" || savedMode === "parent") {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setGuidedModeState(savedMode);
+        }
+    }, []);
+
+    const setGuidedMode = (mode: GuidedMode) => {
+        setGuidedModeState(mode);
+        localStorage.setItem("guidedMode", mode);
+    };
 
     const clearSession = () => {
         setState("waiting");
@@ -129,9 +147,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         state,
         generation,
         language,
+        guidedMode,
         age,
         theme,
         targetWord,
+        setGuidedMode,
         startSession,
         getNextGeneration,
         getGenerationFromId,

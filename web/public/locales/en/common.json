@@ -6,6 +6,8 @@
   "target_word_optional": "Target Word (Optional)",
   "theme_placeholder": "e.g. Space, Dinosaurs",
   "target_word_placeholder": "e.g. Gravity",
+  "choose_theme": "Choose Theme",
+  "choose_word": "Choose Word",
   "random_button": "Random!",
   "explore_experiments": "Explore Experiments",
   "start_experiment": "New Experiment",

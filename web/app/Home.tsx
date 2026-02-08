@@ -1,14 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import LanguageSelector from "@/components/LanguageSelector";
+import GuidedModeSelector from "@/components/GuidedModeSelector";
 import ImageButton from "@/components/ImageButton";
 
 export default function Home() {
     return (
         <div className="relative h-full w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
-            {/* Language Selector */}
-            <div className="absolute top-4 right-4 z-50 md:top-14 md:right-14">
+            {/* Selectors */}
+            <div className="absolute top-4 right-4 z-50 md:top-14 md:right-14 flex flex-col gap-4 items-end">
                 <LanguageSelector />
+                <GuidedModeSelector />
             </div>
 
             <div className="hidden md:block absolute inset-0 z-0">
@@ -44,7 +46,7 @@ export default function Home() {
                         alt="Monster Word Lab"
                         width={1412}
                         height={209}
-                        className="w-[350px] md:w-[600px] lg:w-[800px] h-auto drop-shadow-2xl transition-transform hover-wobble-custom cursor-pointer"
+                        className="w-[350px] md:w-[600px] lg:w-[800px] h-auto drop-shadow-2xl transition-transform hover-wobble-custom animate-initial-wobble cursor-pointer"
                         priority
                     />
                 </div>
