@@ -113,7 +113,7 @@ export default function ExplorePage() {
             )}
 
             {/* Error Overlay */}
-            <Modal isOpen={showError}>
+            <Modal isOpen={showError} onClose={() => setShowError(false)}>
                 <h2 className="text-2xl font-bold text-sky-400 mb-4">
                     {t("no_discoveries_title")}
                 </h2>

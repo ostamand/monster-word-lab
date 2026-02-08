@@ -91,7 +91,7 @@ export default function GeneratePage() {
 
     return (
         <div className="relative h-full w-full overflow-hidden bg-black font-sans selection:bg-violet-500/30">
-            <Modal isOpen={isLimitModalOpen}>
+            <Modal isOpen={isLimitModalOpen} onClose={() => setIsLimitModalOpen(false)}>
                 <h2 className="text-2xl font-bold text-sky-400 mb-4">
                     Daily Limit Reached
                 </h2>
