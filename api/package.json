@@ -6,7 +6,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.js",
-    "delete-generation": "tsx src/scripts/delete-generation.ts"
+    "delete-generation": "tsx src/scripts/delete-generation.ts",
+    "find-curieux": "tsx src/scripts/find-curieux.ts"
   },
   "type": "module",
   "keywords": [],

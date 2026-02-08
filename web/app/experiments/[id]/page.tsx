@@ -29,17 +29,23 @@ export default function ExperimentPage() {
 
     useEffect(() => {
         async function fetchGeneration() {
+            if (typeof id !== "string") return;
+
+            // If context already has this generation, just stop loading.
+            if (generation?.id === id) {
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             try {
-                if (typeof id === "string") {
-                    const generationOutput = await getGenerationFromId(id);
-                    // check if session is already started or not.
-                    if (generationOutput && state !== "running") {
-                        startSession(
-                            generationOutput.userInput.language,
-                            generationOutput.userInput.age,
-                        );
-                    }
+                const generationOutput = await getGenerationFromId(id);
+                // check if session is already started or not.
+                if (generationOutput && state !== "running") {
+                    startSession(
+                        generationOutput.userInput.language,
+                        generationOutput.userInput.age,
+                    );
                 }
             } catch (error) {
                 console.error("Failed to fetch generation", error);
@@ -48,7 +54,7 @@ export default function ExperimentPage() {
             }
         }
         fetchGeneration();
-    }, [id]);
+    }, [id, generation?.id, getGenerationFromId, startSession, state]);
 
     const playAudio = useCallback(() => {
         if (generation?.final_audio_gcs_path) {
@@ -69,9 +75,9 @@ export default function ExperimentPage() {
             // Stop loading to allow re-render with "congratulations" state (and video overlay).
             setLoading(false);
         } else {
-            setLoading(false);
+            router.replace(`/experiments/${nextGen.id}`);
         }
-    }, [loading, getNextGeneration]);
+    }, [loading, getNextGeneration, router]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
