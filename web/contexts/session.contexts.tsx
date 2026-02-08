@@ -3,6 +3,7 @@
 import {
     createContext,
     ReactNode,
+    useCallback,
     useContext,
     useEffect,
     useState,
@@ -66,21 +67,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const setGuidedMode = (mode: GuidedMode) => {
+    const setGuidedMode = useCallback((mode: GuidedMode) => {
         setGuidedModeState(mode);
         localStorage.setItem("guidedMode", mode);
-    };
+    }, []);
 
-    const clearSession = () => {
+    const clearSession = useCallback(() => {
         setState("waiting");
         setHistory([]);
         setAge(null);
         setLanguage(null);
         setTheme(null);
         setTargetWord(null);
-    };
+    }, []);
 
-    const getNextGeneration = async (successful?: boolean) => {
+    const getNextGeneration = useCallback(async (successful?: boolean) => {
         if (state !== "running") return null;
 
         // successful = was the last generation succesful or not?
@@ -98,7 +99,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         if (updatedHistory.length >= MAX_SESSION_IMAGES) {
             console.log("Session limit reached");
             setState("congratulations");
-            setGeneration(null);
             return null;
         }
 
@@ -114,22 +114,21 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             console.log("No more generations available");
             // we are effectively done with this batch, show congratulations
             setState("congratulations");
-            setGeneration(null);
             return null;
         }
 
         setGeneration(nextGeneration);
 
         return nextGeneration;
-    };
+    }, [state, history, generation, language]);
 
-    const getGenerationFromId = async (id: string) => {
+    const getGenerationFromId = useCallback(async (id: string) => {
         const generationOutput = await getGenerationById(id);
         setGeneration(generationOutput);
         return generationOutput;
-    };
+    }, []);
 
-    const startSession = (
+    const startSession = useCallback((
         language: PossibleLanguages,
         age: number | null,
         theme?: string | null,
@@ -145,7 +144,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         if (targetWord !== undefined) {
             setTargetWord(targetWord);
         }
-    };
+    }, []);
 
     const values = {
         state,

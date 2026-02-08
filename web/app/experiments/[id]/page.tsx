@@ -41,7 +41,7 @@ export default function ExperimentPage() {
             try {
                 const generationOutput = await getGenerationFromId(id);
                 // check if session is already started or not.
-                if (generationOutput && state !== "running") {
+                if (generationOutput && state === "waiting") {
                     startSession(
                         generationOutput.userInput.language,
                         generationOutput.userInput.age,
@@ -54,7 +54,7 @@ export default function ExperimentPage() {
             }
         }
         fetchGeneration();
-    }, [id, generation?.id, getGenerationFromId, startSession, state]);
+    }, [id, getGenerationFromId, startSession, state]);
 
     const playAudio = useCallback(() => {
         if (generation?.final_audio_gcs_path) {
@@ -67,13 +67,11 @@ export default function ExperimentPage() {
 
     const handleNext = useCallback(async () => {
         if (loading) return;
-        setLoading(true);
         const nextGen = await getNextGeneration();
 
         if (!nextGen) {
             // Session over (limit reached or no more images).
-            // Stop loading to allow re-render with "congratulations" state (and video overlay).
-            setLoading(false);
+            // No need to set loading, state will change to "congratulations"
         } else {
             router.replace(`/experiments/${nextGen.id}`);
         }
