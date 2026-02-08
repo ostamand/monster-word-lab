@@ -6,13 +6,12 @@ const storage = new Storage({
     keyFilename: "service-account.json",
 });
 
-const expiration = Date.now() + 1000 * 60 * 60; // 1 hour
-
 export async function getSignedUrl(
     bucketName: string,
     filePath: string,
 ): Promise<string | undefined> {
     try {
+        const expiration = Date.now() + 1000 * 60 * 60; // 1 hour
         const [url] = await storage
             .bucket(bucketName)
             .file(filePath)
