@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useSessionContext } from "@/contexts/session.contexts";
 import { GenerationInput, sendGeneration } from "@/lib/generations";
 import Modal from "@/components/Modal";
+import Title from "@/components/Title";
 
 export default function GeneratePage() {
     const { t } = useTranslation();
@@ -137,12 +138,8 @@ export default function GeneratePage() {
             <main className="relative z-30 flex h-full flex-col items-center pb-8 pt-6 sm:pb-12 sm:pt-10 md:pb-16 md:pt-16 pointer-events-none">
                 {/* Title */}
                 <div className="animate-fade-in-down pointer-events-auto">
-                    <Image
-                        src="/common/title-v2.webp"
-                        alt="Monster Word Lab"
-                        width={1412}
-                        height={209}
-                        className="w-[350px] md:w-[600px] lg:w-[800px] h-auto drop-shadow-2xl transition-transform hover-wobble-custom"
+                    <Title
+                        className="w-[350px] md:w-[600px] lg:w-[800px]"
                         priority
                     />
                 </div>

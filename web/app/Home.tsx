@@ -5,6 +5,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import GuidedModeSelector from "@/components/GuidedModeSelector";
 import ImageButton from "@/components/ImageButton";
 import Modal from "@/components/Modal";
+import Title from "@/components/Title";
 import { useTranslation } from "react-i18next";
 
 export default function Home() {
@@ -63,12 +64,8 @@ export default function Home() {
                     className="animate-fade-in-down opacity-0 pointer-events-auto"
                     style={{ animationDelay: "0ms" }}
                 >
-                    <Image
-                        src="/common/title-v2.webp"
-                        alt="Monster Word Lab"
-                        width={1412}
-                        height={209}
-                        className="w-[350px] md:w-[600px] lg:w-[800px] h-auto drop-shadow-2xl transition-transform hover-wobble-custom animate-initial-wobble cursor-pointer"
+                    <Title
+                        className="w-[350px] md:w-[600px] lg:w-[800px] animate-initial-wobble"
                         priority
                     />
                 </div>

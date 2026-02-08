@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from "react";
+import confetti from "canvas-confetti";
 
 interface CongratulationsVideoProps {
     onComplete: () => void;
@@ -12,6 +13,46 @@ export default function CongratulationsVideo(
     const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
     const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        if (isVisible) {
+            const end = Date.now() + 4 * 1000;
+            const colors = ["#C084FC", "#22D3EE", "#6366F1", "#F472B6", "#FB7185", "#38BDF8"];
+
+            const frame = () => {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.6 },
+                    colors: colors,
+                    scalar: 1.2,
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.6 },
+                    colors: colors,
+                    scalar: 1.2,
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            };
+            frame();
+
+            // Initial big burst
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: colors,
+                scalar: 1.5,
+            });
+        }
+    }, [isVisible]);
 
     useEffect(() => {
         async function fetchVideos() {
