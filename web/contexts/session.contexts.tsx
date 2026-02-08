@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useState, useEffect } from "react";
+import {
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 
 import { GenerationOutput, PossibleLanguages } from "@/lib/generations";
 import { getGenerationById, getRandomGeneration } from "@/lib/generations";
@@ -111,8 +117,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             setGeneration(null);
             return null;
         }
-
-        console.log("Next generation:", nextGeneration);
 
         setGeneration(nextGeneration);
 

@@ -59,16 +59,23 @@ def get_previous_sentences(userInput) -> str:
             return "History: No previous sentences found for this profile."
     
         formatted_output = [f"History (Last {len(results)} items):"]
+        used_words = set()
 
         for i, item in enumerate(results, 1):
             pedagogical = item.get("pedagogicalOutput", {})
-            #u_in = item.get("userInput", {})
+            u_in = item.get("userInput", {})
             
             sentence = pedagogical.get("sentence", "[No Sentence]")
-            #target_word = u_in.get("targetWord", "General")
-            #theme = u_in.get("theme", "General")
+            target_word = u_in.get("targetWord", "General")
+            theme = u_in.get("theme", "General")
             
-            formatted_output.append(f"{i}. \"{sentence}\"")
+            if target_word and target_word != "General":
+                used_words.add(target_word.lower())
+            
+            formatted_output.append(f"{i}. \"{sentence}\" (Word: {target_word}, Theme: {theme})")
+
+        if used_words:
+            formatted_output.insert(1, f"Recently taught words: {', '.join(sorted(list(used_words)))}")
 
         return "\n".join(formatted_output)
 

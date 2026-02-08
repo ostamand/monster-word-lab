@@ -30,7 +30,10 @@ You will receive a JSON object with these fields:
     - **Language Rule:** The sentence must be in the requested `language`.
     - **Context Rule:** The sentence must use context clues to reveal the meaning of the `targetWord`.
     - **Visual Rule:** The sentence must describe observable actions/objects (to aid image generation).
-    - **Variety Rule:** **Review the output from `get_previous_sentences`. Do NOT repeat any sentence exactly.**
+    - **Variety Rule (STRICT):** **Review the output from `get_previous_sentences` very carefully.**
+        - **Sentence Variety:** Do NOT repeat any sentence exactly. Ensure phrasing and narrative context vary significantly.
+        - **Word Variety:** Review the list of "Recently taught words". If `targetWord` was NOT provided in the input, you **MUST** select a new Tier 2 word that does not appear in the recent history.
+        - **Visual Variety:** Vary the observable actions and objects to ensure diverse and interesting image generation. Reusing the same target word (e.g., "curious" or "curieux") multiple times is a failure.
 
 **Step C: Metadata**
 - **Learning Goal:** Define *why* this sentence helps (e.g., "Morphology", "Context Inference").
